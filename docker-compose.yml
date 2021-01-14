@@ -1,0 +1,21 @@
+version: '3'
+
+services:
+    db:
+        image: mysql:5
+        environment:
+            MYSQL_ROOT_PASSWORD: g4lu4pps
+            MYSQL_DATABASE: sistema-gestion
+            MYSQL_USER: galu
+            MYSQL_PASSWORD: g4lu4pps
+        ports:
+        - "3306:3306"
+    web:
+        build: .
+        command: python3 manage.py runserver 0.0.0.0:8000
+        volumes:
+            - .:/usr/src/app
+        ports:
+            - 8000:8000
+        depends_on:
+            - db
