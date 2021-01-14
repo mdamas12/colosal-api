@@ -4,9 +4,11 @@
 
 2. cd rutaPrincipalDelProyecto/
 
-3. Escribir en la terminal docker-compose up --build
+3. El archivo .env.example duplicarlo y quitarle el .example o renombrarlo
 
-4. Correr las migraciones con docker-compose run web python manage.py migrate
+5. Escribir en la terminal docker-compose up --build
+
+6. Correr las migraciones con docker-compose run web python manage.py migrate
 
 
 # Comandos de ayuda
