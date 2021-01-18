@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     'panel.brands',
     'panel.categories',
     'panel.products',
+    'panel.combos',
 ]
 
 MIDDLEWARE = [
@@ -112,6 +113,10 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+REST_FRAMEWORK = {
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.LimitOffsetPagination',
+    'PAGE_SIZE': 25
+}
 
 # Internationalization
 # https://docs.djangoproject.com/en/2.0/topics/i18n/
