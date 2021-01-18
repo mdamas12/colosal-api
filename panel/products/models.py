@@ -8,6 +8,7 @@ from rest_framework.response import Response
 
 from panel.brands.models import Brand
 from panel.categories.models import Category
+from panel.characteristics.models import Characteristic
 
 
 class Product(TimeStampedModel):
@@ -21,10 +22,33 @@ class Product(TimeStampedModel):
     coin = models.CharField(max_length=20,choices=COINS,default="USD")
     category = models.ForeignKey(Category, on_delete=models.PROTECT)
     brand = models.ForeignKey(Brand, on_delete=models.PROTECT)
-    count = models.IntegerField(default=0)
+    quantity = models.IntegerField(default=0)
 
     class Meta:
         verbose_name = "Producto"
         verbose_name_plural = "Productos"
+
+    def __str__(self): return self.name
+
+class ProductDetail(TimeStampedModel):
+
+    product = models.ForeignKey(Product, on_delete=models.PROTECT)
+    characteristic = models.ForeignKey(Characteristic, on_delete=models.PROTECT)
+    description = models.CharField(null=True,blank=True,max_length=255)
+
+    class Meta:
+        verbose_name = "Detalle de producto"
+        verbose_name_plural = "Detalles de productos"
+
+    def __str__(self): return self.name
+
+class ProductGallery(TimeStampedModel):
+
+    product = models.ForeignKey(Product, on_delete=models.PROTECT)
+    image = models.FileField(upload_to='uploads')
+
+    class Meta:
+        verbose_name = "Galeria de producto"
+        verbose_name_plural = "Galerias de productos"
 
     def __str__(self): return self.name
