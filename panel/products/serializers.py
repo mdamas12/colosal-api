@@ -10,6 +10,18 @@ class ProductMixinSerializer(serializers.ModelSerializer):
         model = Product
         fields = ('__all__')
 
+class ProductDetailMixinSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = ProductDetail
+        fields = ('__all__')
+
+class ProductGalleryMixinSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = ProductGallery
+        fields = ('__all__')
+
 
 class ProductListSerializer(serializers.ModelSerializer):
     category = CategorySerializer()
