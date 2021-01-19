@@ -48,6 +48,8 @@ INSTALLED_APPS = [
     'panel.characteristics',
     'panel.products',
     'panel.combos',
+    'panel.stocktaking',
+    
 ]
 
 MIDDLEWARE = [

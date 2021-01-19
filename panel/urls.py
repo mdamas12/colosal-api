@@ -7,4 +7,5 @@ urlpatterns = [
     url(r'^categories/', include('panel.categories.urls')),
     url(r'^features/', include('panel.characteristics.urls')),
     url(r'^promotions/', include('panel.combos.urls')),
+    url(r'^stock/', include('panel.stocktaking.urls')),
 ]
