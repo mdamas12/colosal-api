@@ -48,10 +48,3 @@ class PurshaseDetailist(APIView):
         Products = PurchaseDetail.objects.all(purshase=pk)
         serializer = PurshaseDetailSerializer(Products, many=True)
         return Response(serializer.data)
-
-
- 
-
-
-   
-    
