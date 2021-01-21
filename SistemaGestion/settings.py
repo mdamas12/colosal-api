@@ -45,8 +45,12 @@ INSTALLED_APPS = [
     'panel',
     'panel.brands',
     'panel.categories',
+    'panel.characteristics',
     'panel.products',
     'panel.combos',
+    'panel.providers',
+    'panel.purshases',
+    
 ]
 
 MIDDLEWARE = [
