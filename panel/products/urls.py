@@ -12,5 +12,5 @@ base_router.register(r'gallery', views.ProductGalleryViewSet)
 
 urlpatterns = [
     url(r'', include(base_router.urls)),
-    url(r'list', ProductsListView.as_view()),
+    #url(r'list', ProductsListView.as_view()),
 ]

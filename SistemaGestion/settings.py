@@ -48,7 +48,8 @@ INSTALLED_APPS = [
     'panel.characteristics',
     'panel.products',
     'panel.combos',
-    'panel.stocktaking',
+    'panel.providers',
+    'panel.purshases',
     
 ]
 

@@ -17,7 +17,7 @@ class Product(TimeStampedModel):
 
     name = models.CharField(max_length=255)
     description = models.TextField(null=True,blank=True)
-    image = models.FileField(upload_to='uploads')
+    image = models.FileField(upload_to='uploads', null=True)
     price = models.DecimalField(max_digits=19, decimal_places=2)
     coin = models.CharField(max_length=20,choices=COINS,default="USD")
     category = models.ForeignKey(Category, on_delete=models.PROTECT)
@@ -28,7 +28,7 @@ class Product(TimeStampedModel):
         verbose_name = "Producto"
         verbose_name_plural = "Productos"
 
-    def __str__(self): return self.name
+    def __str__(self): return self
 
 class ProductDetail(TimeStampedModel):
 
