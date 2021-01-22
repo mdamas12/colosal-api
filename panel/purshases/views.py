@@ -28,17 +28,17 @@ class PurshaselViewSet(
     serializer_class = PurchaseMixinSerializer
 
 
-class listdetail(APIView):
+class ListPurshaseDetail(APIView):
     serializer_class = PurshaseDetailSerializer
 
     def get(self, request, pk):
-        print("ssafdfass")
-        #Products = PurchaseDetail.objects.all(purshase=pk)
-        #serializer = PurshaseDetailSerializer(Products, many=True)
+        
+        Products = PurchaseDetail.objects.all(purshase=pk)
+        serializer = PurshaseDetailSerializer(Products, many=True)
         return Response("serializer.data")
 
 
-"""class PurshaseDetailCreate(APIView):
+class PurshaseDetailCreate(APIView):
     serializer_class = PurshaseDetailSerializer
     serializer_product = ProductMixinSerializer
 
@@ -62,5 +62,5 @@ class listdetail(APIView):
             #return Response(serializer.data)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)    
-"""
+
     

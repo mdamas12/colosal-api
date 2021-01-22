@@ -12,7 +12,8 @@ base_router.register(r'', views.PurshaselViewSet)
 
 
 urlpatterns = [
-    url(r'detail/<int:pk>/', views.listdetail.as_view()),
-    #url(r'', include(base_router.urls)),
-    #url(r'detail/', views.PurshaseDetailCreate.as_view()),  
+    
+    url(r'', include(base_router.urls)),
+    url(r'detail/', views.PurshaseDetailCreate.as_view()), 
+    url(r'detail/<int:pk>/', views.ListPurshaseDetail.as_view()), 
 ]
