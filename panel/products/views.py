@@ -1,11 +1,13 @@
-from rest_framework.generics import RetrieveAPIView, ListAPIView
+from rest_framework.generics import ListAPIView
 from .serializers import *
 from .repositories import *
 
+from rest_framework import mixins, viewsets
+from rest_framework.permissions import AllowAny
+
 # Create your views here.
 class ProductsListView(ListAPIView):
-
-    serializer_class = ProductSerializer
+    serializer_class = ProductListSerializer
 
     def get_queryset(self):
         return self.repository.get_product_list()
@@ -20,3 +22,35 @@ class ProductsListView(ListAPIView):
             repository
         )
         return usecase.execute()"""
+
+
+class ProductViewSet(
+    mixins.RetrieveModelMixin,
+    mixins.CreateModelMixin,
+    mixins.UpdateModelMixin,
+    viewsets.GenericViewSet
+):
+    queryset = Product.objects.all().order_by('-modified')
+    permission_classes = (AllowAny,)
+    serializer_class = ProductMixinSerializer
+
+
+class ProductDetailViewSet(
+    mixins.RetrieveModelMixin,
+    mixins.CreateModelMixin,
+    mixins.UpdateModelMixin,
+    viewsets.GenericViewSet
+):
+    queryset = ProductDetail.objects.all().order_by('-modified')
+    permission_classes = (AllowAny,)
+    serializer_class = ProductDetailMixinSerializer
+
+class ProductGalleryViewSet(
+    mixins.RetrieveModelMixin,
+    mixins.CreateModelMixin,
+    mixins.UpdateModelMixin,
+    viewsets.GenericViewSet
+):
+    queryset = ProductGallery.objects.all().order_by('-modified')
+    permission_classes = (AllowAny,)
+    serializer_class = ProductGalleryMixinSerializer
