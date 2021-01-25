@@ -6,24 +6,8 @@ from model_utils.models import TimeStampedModel
 from rest_framework import status
 from rest_framework.response import Response
 
-from panel.products.models import Product,ProductDetail
-#from panel.categories.models import Category
-#from panel.characteristics.models import Characteristic
-
-
-
-class Provider(TimeStampedModel):
-
-    name = models.CharField(max_length=255)
-    address = models.TextField(null=True,blank=True)
-    email = models.TextField(null=True,blank=True)
-    number = models.TextField(null=True,blank=True)
-  
-    class Meta:
-        verbose_name = "Proveedor"
-        verbose_name_plural = "Proveedores"
-
-    def __str__(self): return self.name
+from panel.products.models import *
+from panel.providers.models import * 
 
 class Purchase(TimeStampedModel):
 
@@ -31,7 +15,7 @@ class Purchase(TimeStampedModel):
 
     date = models.CharField(max_length=50)
     description = models.TextField(null=True,blank=True)
-    porvider = models.ForeignKey(Provider, on_delete=models.PROTECT)
+    provider = models.ForeignKey(Provider, on_delete=models.PROTECT)
     invoice = models.TextField(null=True,blank=True)
     coin = models.CharField(max_length=20,choices=COINS,default="USD")
     amount = models.DecimalField(max_digits=19, decimal_places=2)
