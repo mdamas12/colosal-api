@@ -45,7 +45,7 @@ class Migration(migrations.Migration):
                 ('purchase_Received', models.IntegerField(default=0)),
                 ('status', models.CharField(default='Incomplete', max_length=20)),
                 ('product', models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, to='products.Product')),
-                ('purchase', models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, to='purshases.Purchase')),
+                ('purchase', models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, to='purchases.Purchase')),
             ],
             options={
                 'verbose_name': 'Detalle de producto',

@@ -15,7 +15,7 @@ class Purchase(TimeStampedModel):
 
     date = models.CharField(max_length=50)
     description = models.TextField(null=True,blank=True)
-    porvider = models.ForeignKey(Provider, on_delete=models.PROTECT)
+    provider = models.ForeignKey(Provider, on_delete=models.PROTECT)
     invoice = models.TextField(null=True,blank=True)
     coin = models.CharField(max_length=20,choices=COINS,default="USD")
     amount = models.DecimalField(max_digits=19, decimal_places=2)

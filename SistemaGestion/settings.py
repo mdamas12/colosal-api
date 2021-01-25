@@ -49,7 +49,7 @@ INSTALLED_APPS = [
     'panel.products',
     'panel.combos',
     'panel.providers',
-    'panel.purshases',
+    'panel.purchases',
     
 ]
 

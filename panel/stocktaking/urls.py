@@ -7,7 +7,7 @@ from . import views
 
 base_router = routers.SimpleRouter()
 base_router.register(r'providers', views.ProviderViewSet)
-base_router.register(r'purshases', views.PurshaselViewSet)
+base_router.register(r'purchases', views.PurshaselViewSet)
 
 
 urlpatterns = [
