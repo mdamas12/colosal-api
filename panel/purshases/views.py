@@ -1,11 +1,12 @@
 
 from rest_framework.views import APIView
 from rest_framework.response import Response
-
 from rest_framework.generics import ListAPIView
 from rest_framework.decorators import api_view
+
 from .serializers import *
 from panel.products.serializers import ProductMixinSerializer
+
 from .models import *
 from panel.products.models import *
 
@@ -28,15 +29,6 @@ class PurshaselViewSet(
     serializer_class = PurchaseMixinSerializer
 
 
-class ListPurshaseDetail(APIView):
-    serializer_class = PurshaseDetailSerializer
-
-    def get(self, request, pk):
-        
-        Products = PurchaseDetail.objects.all(purshase=pk)
-        serializer = PurshaseDetailSerializer(Products, many=True)
-        return Response("serializer.data")
-
 
 class PurshaseDetailCreate(APIView):
     serializer_class = PurshaseDetailSerializer
@@ -55,12 +47,56 @@ class PurshaseDetailCreate(APIView):
             product = Product()
             product = Product.objects.get(id=id)
             product.quantity = product.quantity + request.data['purchase_Received']
-            #product.save()
+            product.save()
            
-            #serializer.save()
+            serializer.save()
             #return Response(serializer.data, status=status.HTTP_201_CREATED)
             #return Response(serializer.data)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)    
 
     
+class ListPurshaseDetail(APIView):
+    serializer_class = PurshaseDetailSerializer
+
+    def get(self, request, pk, format=None):
+
+        Products = PurchaseDetail.objects.filter(purchase=pk)
+        serializer = PurshaseDetailSerializer(Products, many=True)
+        return Response(serializer.data)
+
+class changesPurshaseDetail(APIView):
+    """ 
+     1-) Get: busca un producto segun su id
+     2-) put: Actualiza/edita el producto de una compra
+     3-) delete: elimina el producto de una compra 
+     """
+
+    serializer_class = PurshaseDetailSerializer
+
+    def get(self, request, pk, format=None):
+
+        Products = PurchaseDetail.objects.filter(id=pk)
+        serializer = PurshaseDetailSerializer(Products, many=True)
+        return Response(serializer.data)
+
+    def put(self, request, pk, format=None):
+        Products = PurchaseDetail.objects.get(id=pk)
+        print(Products.purchase_Received)
+        before_quantity = Products.purchase_Received
+        serializer = PurshaseDetailSerializer(Products, data=request.data)
+        if serializer.is_valid():
+            product = Product()
+            product = Product.objects.get(id=request.data['product'])
+            product.quantity = product.quantity - before_quantity + request.data['purchase_Received'
+            #product.quantity = 
+            product.save()
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)    
+
+    
+    def delete(self, request, pk, format=None):
+        Products = PurchaseDetail.objects.get(id=pk)
+        Products.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)

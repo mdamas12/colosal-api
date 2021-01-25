@@ -25,6 +25,7 @@ class ProductsListView(ListAPIView):
 
 
 class ProductViewSet(
+    mixins.ListModelMixin,
     mixins.RetrieveModelMixin,
     mixins.CreateModelMixin,
     mixins.UpdateModelMixin,
