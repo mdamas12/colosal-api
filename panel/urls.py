@@ -8,5 +8,5 @@ urlpatterns = [
     url(r'^features/', include('panel.characteristics.urls')),
     url(r'^promotions/', include('panel.combos.urls')),
     url(r'^providers/', include('panel.providers.urls')),
-    url(r'^purshases/', include('panel.purshases.urls')),
+    url(r'^purchases/', include('panel.purchases.urls')),
 ]
