@@ -20,11 +20,11 @@ class PurshaseDetailSerializer(serializers.ModelSerializer):
 
 
 class PurshaseDetailCreateSerializer(serializers.ModelSerializer):
-    # product = ProductMixinSerializer()
-    id = serializers.IntegerField()
+    #purchase = PurchaseMixinSerializer()
+    #purchase = serializers.IntegerField()
 
     class Meta:
         model = PurchaseDetail
-        fields = ('id','purchase_price','purchase_quantity','purchase_Received','status')
+        fields =  fields = ('__all__')
 
 
