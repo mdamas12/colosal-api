@@ -30,8 +30,8 @@ class PurchaseDetail(TimeStampedModel):
 
     #STATUS = Choices('Imcomplete', 'Complete' )
 
-    purchase = models.ForeignKey(Purchase, on_delete=models.PROTECT)
-    product = models.ForeignKey(Product, on_delete=models.PROTECT)
+    purchase = models.ForeignKey(Purchase, related_name='PurchaseDetail', on_delete=models.PROTECT)
+    product = models.ForeignKey(Product, related_name='PurchaseProduct', on_delete=models.PROTECT)
     purchase_price = models.DecimalField(max_digits=19, decimal_places=2)
     purchase_quantity = models.IntegerField(default=0)
     purchase_Received = models.IntegerField(default=0)

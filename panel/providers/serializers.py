@@ -8,4 +8,12 @@ class ProviderMixinSerializer(serializers.ModelSerializer):
         model = Provider
         fields = ('__all__')
 
+class ProviderDetailSerializer(serializers.ModelSerializer):
 
+    class Meta:
+        model = Provider
+        fields = (
+            'id',
+            'name',
+            'number'
+        )

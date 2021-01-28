@@ -1,7 +1,7 @@
 from rest_framework import serializers
 
-from panel.products.serializers import ProductMixinSerializer
-from panel.providers.serializers import ProviderMixinSerializer
+from panel.products.serializers import ProductMixinSerializer, ProductDetailSerializer
+from panel.providers.serializers import ProviderMixinSerializer, ProviderDetailSerializer
 from panel.purchases.models import *
 
 
@@ -37,3 +37,37 @@ class PurshaseDetailCreateSendSerializer(serializers.ModelSerializer):
         model = PurchaseDetail
         fields = ('__all__')
 
+
+class ListPurshaseDetailSerializer(serializers.ModelSerializer):
+    #purchase = PurchaseMixinSerializer()
+    #purchase = serializers.IntegerField()
+    product = ProductDetailSerializer(many=False)
+    #Provider = ProviderMixinSerializer(many=false)
+    class Meta:
+        model = PurchaseDetail
+        fields = (
+            'id',
+            'purchase',
+            'purchase_price',
+            'purchase_quantity',
+            'purchase_Received',
+            'status',
+            'product',
+        )
+
+class ListPurshaseSerializer(serializers.ModelSerializer):
+    PurchaseDetail = ListPurshaseDetailSerializer(many=True)
+    provider = ProviderDetailSerializer(many=False)
+    class Meta:
+        model = Purchase
+        fields = (
+            'id',
+            'date',
+            'description',
+            'invoice',
+            'coin',
+            'amount',
+            'provider',
+            'PurchaseDetail'
+
+        )
