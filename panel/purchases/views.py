@@ -88,10 +88,10 @@ class PurchaseCreateView(APIView):
                         purchase_detail.status = item_product['status']
                         purchase_detail.save()
 
-                        purchases_detail_array.append(PurshaseDetailCreateSerializer(purchase_detail).data)
+                        purchases_detail_array.append(PurshaseDetailCreateSendSerializer(purchase_detail).data)
                        
                     else:
-                        return Response(serializer_product.errors, status=status.HTTP_400_BAD_REQUEST)           
+                        return Response(serializer_product.errors, status=status.HTTP_400_BAD_REQUEST)
                 
                 data_end = {
                     "purchase": serializer_purchase.data,

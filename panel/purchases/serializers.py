@@ -22,9 +22,18 @@ class PurshaseDetailSerializer(serializers.ModelSerializer):
 class PurshaseDetailCreateSerializer(serializers.ModelSerializer):
     #purchase = PurchaseMixinSerializer()
     #purchase = serializers.IntegerField()
+    purchase = serializers.IntegerField(read_only=True)
 
     class Meta:
         model = PurchaseDetail
-        fields =  fields = ('__all__')
+        fields = ('__all__')
 
+
+class PurshaseDetailCreateSendSerializer(serializers.ModelSerializer):
+    #purchase = PurchaseMixinSerializer()
+    #purchase = serializers.IntegerField()
+
+    class Meta:
+        model = PurchaseDetail
+        fields = ('__all__')
 
