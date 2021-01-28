@@ -13,10 +13,10 @@ base_router = routers.SimpleRouter()
 
 
 urlpatterns = [
-    #url(r'^$', include(base_router.urls)),
+    path('detail/<int:pk>/', PurshaseDetailView.as_view()),
     url(r'list', views.PurchaseListView.as_view()),
     url(r'', views.PurchaseCreateView.as_view()),
     #url(r'^detail/$', views.PurshaseDetailCreate.as_view()),
-    #url(r'^detail/<int:pk>/$', views.ListPurshaseDetail.as_view()),
+    
 ]
 urlpatterns = format_suffix_patterns(urlpatterns)
