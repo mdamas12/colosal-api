@@ -19,8 +19,10 @@ from rest_framework.permissions import AllowAny
 # Create your views here.
 
 class PurchaseCreateView(APIView):
+    
 
     def post(self,request,format=None):
+        """Guardar una compra"""
         data = request.data
         #print(data)
 
@@ -95,14 +97,16 @@ class PurchaseCreateView(APIView):
 
 
 class PurshaseDetailView(APIView):
-
+    
     def get(self, request, pk, format=None):
+        """Buscar una compra"""
 
         purchase = Purchase.objects.get(id=pk)
         serializer = ListPurshaseSerializer(purchase, many=False)
         return Response(serializer.data)
 
     def put(self, request, pk, format=None):
+        """Actualizar una compra"""
 
         #purchase = Purchase.objects.get(id=pk)
         #serializer = ListPurshaseSerializer(purchase, many=False)
@@ -183,6 +187,8 @@ class PurshaseDetailView(APIView):
  
  
 class PurchaseListView(ListAPIView):
+    
+    """Listar Todas Las Compras"""
 
     queryset = Purchase.objects.all()
     serializer_class = ListPurshaseSerializer
