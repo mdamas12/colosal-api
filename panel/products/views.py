@@ -25,6 +25,7 @@ class ProductsListView(ListAPIView):
 
 
 class ProductViewSet(
+    mixins.ListModelMixin,
     mixins.RetrieveModelMixin,
     mixins.CreateModelMixin,
     mixins.UpdateModelMixin,
@@ -33,3 +34,24 @@ class ProductViewSet(
     queryset = Product.objects.all().order_by('-modified')
     permission_classes = (AllowAny,)
     serializer_class = ProductMixinSerializer
+
+
+class ProductDetailViewSet(
+    mixins.RetrieveModelMixin,
+    mixins.CreateModelMixin,
+    mixins.UpdateModelMixin,
+    viewsets.GenericViewSet
+):
+    queryset = ProductDetail.objects.all().order_by('-modified')
+    permission_classes = (AllowAny,)
+    serializer_class = ProductDetailMixinSerializer
+
+class ProductGalleryViewSet(
+    mixins.RetrieveModelMixin,
+    mixins.CreateModelMixin,
+    mixins.UpdateModelMixin,
+    viewsets.GenericViewSet
+):
+    queryset = ProductGallery.objects.all().order_by('-modified')
+    permission_classes = (AllowAny,)
+    serializer_class = ProductGalleryMixinSerializer
