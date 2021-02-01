@@ -7,7 +7,7 @@ from panel.categories.models import Category
 from panel.products.models import Product
 
 
-class Combo(TimeStampedModel):
+class Promotion(TimeStampedModel):
 
     COINS = Choices('USD', 'BS')
 
@@ -17,23 +17,23 @@ class Combo(TimeStampedModel):
     price = models.DecimalField(max_digits=19, decimal_places=2)
     coin = models.CharField(max_length=20,choices=COINS,default="USD")
     category = models.ForeignKey(Category, on_delete=models.PROTECT)
-    count = models.IntegerField(default=0)
+    quantity = models.IntegerField(default=0)
 
     class Meta:
-        verbose_name = "Combo"
-        verbose_name_plural = "Combos"
+        verbose_name = "Promocion"
+        verbose_name_plural = "Promociones"
 
     def __str__(self): return self.name
 
 
-class ComboDetail(TimeStampedModel):
+class PromotionDetail(TimeStampedModel):
 
     product = models.ForeignKey(Product, on_delete=models.PROTECT)
-    combo = models.ForeignKey(Combo, on_delete=models.PROTECT)
-    count = models.IntegerField(default=0)
+    combo = models.ForeignKey(Promotion, on_delete=models.PROTECT)
+    quantity = models.IntegerField(default=0)
 
     class Meta:
-        verbose_name = "Detalle de combo"
-        verbose_name_plural = "Detalles de Combos"
+        verbose_name = "Detalle de promocion"
+        verbose_name_plural = "Detalles de promociones"
 
     def __str__(self): return self.name
