@@ -5,6 +5,8 @@ from panel.categories.serializers import CategorySerializer, CategoriesDetailSer
 from .models import *
 
 class ProductMixinSerializer(serializers.ModelSerializer):
+    category = CategoriesDetailSerializer(many=False)
+    brand = BrandDetailSerializer(many=False)
 
     class Meta:
         model = Product

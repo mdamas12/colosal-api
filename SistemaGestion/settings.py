@@ -50,6 +50,8 @@ INSTALLED_APPS = [
     'panel.combos',
     'panel.providers',
     'panel.purchases',
+    'panel.customers',
+    'panel.payments',
     
 ]
 
