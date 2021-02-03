@@ -1,4 +1,5 @@
 from rest_framework.generics import ListAPIView
+from rest_framework.views import APIView
 from .serializers import *
 from .repositories import *
 
@@ -55,3 +56,14 @@ class ProductGalleryViewSet(
     queryset = ProductGallery.objects.all().order_by('-modified')
     permission_classes = (AllowAny,)
     serializer_class = ProductGalleryMixinSerializer
+
+"""
+class SearchsPrdoctslView(APIView):
+    
+    def get(self, request, pk, format=None):
+        
+
+        product = Product.objects.filter(name__contains=pk)
+        serializer = ProductMixinSerializer(product, many=True)
+        return Response(serializer.data)
+"""

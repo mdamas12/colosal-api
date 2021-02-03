@@ -1,4 +1,5 @@
 from django.conf.urls import url
+from django.urls import path
 from django.urls import include
 from rest_framework import routers
 
@@ -11,6 +12,7 @@ base_router.register(r'detail', views.ProductDetailViewSet)
 base_router.register(r'gallery', views.ProductGalleryViewSet)
 
 urlpatterns = [
+    #path('search/<char:pk>/', SearchsPrdoctslView.as_view()),
     url(r'', include(base_router.urls)),
     #url(r'list', ProductsListView.as_view()),
 ]

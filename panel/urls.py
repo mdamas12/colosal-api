@@ -9,4 +9,6 @@ urlpatterns = [
     url(r'^promotions/', include('panel.combos.urls')),
     url(r'^providers/', include('panel.providers.urls')),
     url(r'^purchases/', include('panel.purchases.urls')),
+    url(r'^customers/', include('panel.customers.urls')),
+    url(r'^payments/', include('panel.payments.urls')),
 ]
