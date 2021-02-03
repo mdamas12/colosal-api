@@ -1,7 +1,5 @@
 .env
 .idea
-<<<<<<< HEAD
-=======
 /uploads
 *__pycache__*
 *.pyc
@@ -19,4 +17,3 @@ tests/coverage_html/
 tests/.coverage
 build/
 tests/report/
->>>>>>> eccd736c790cf99b4b124fb86d789b7b954db949
