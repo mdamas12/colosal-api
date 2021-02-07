@@ -41,7 +41,14 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.sites',
     'rest_framework_swagger',
+    'rest_framework',
+    'rest_framework.authtoken',
+    'rest_auth',
+    'allauth',
+    'allauth.account',
+    'rest_auth.registration',
     'panel',
     'panel.brands',
     'panel.categories',
@@ -52,8 +59,10 @@ INSTALLED_APPS = [
     'panel.purchases',
     'panel.customers',
     'panel.payments',
-    
+
 ]
+
+SITE_ID = 1
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -124,7 +133,13 @@ REST_FRAMEWORK = {
     'PAGE_SIZE': 25
 }
 
+REST_AUTH_REGISTER_SERIALIZERS = {
+    'REGISTER_SERIALIZER': 'users.serializers.RegisterSerializer',
+}
 
+REST_AUTH_SERIALIZERS = {
+    'REGISTER_SERIALIZER': 'users.serializers.RegisterSerializer',
+}
 
 # Internationalization
 # https://docs.djangoproject.com/en/2.0/topics/i18n/
