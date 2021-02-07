@@ -32,20 +32,20 @@ class Product(TimeStampedModel):
 
 class ProductDetail(TimeStampedModel):
 
-    product = models.ForeignKey(Product, on_delete=models.PROTECT)
-    characteristic = models.ForeignKey(Characteristic, on_delete=models.PROTECT)
+    product = models.ForeignKey(Product,  related_name='detail_product',  on_delete=models.PROTECT)
+    characteristic = models.ForeignKey(Characteristic, related_name='feature', on_delete=models.PROTECT)
     description = models.CharField(null=True,blank=True,max_length=255)
 
     class Meta:
         verbose_name = "Detalle de producto"
         verbose_name_plural = "Detalles de productos"
 
-    def __str__(self): return self.name
+    def __str__(self): return self.product
 
 class ProductGallery(TimeStampedModel):
 
-    product = models.ForeignKey(Product, on_delete=models.PROTECT)
-    image = models.FileField(upload_to='uploads')
+    product = models.ForeignKey(Product, related_name='picture', on_delete=models.PROTECT)
+    image = models.FileField(upload_to='uploads', null=True)
 
     class Meta:
         verbose_name = "Galeria de producto"
