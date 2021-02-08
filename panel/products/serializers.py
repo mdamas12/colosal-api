@@ -9,7 +9,7 @@ from .models import *
 class ProductSerializer(serializers.ModelSerializer):
     category = serializers.IntegerField(read_only=True)
     brand = serializers.IntegerField(read_only=True)
-    image = serializers.CharField(required=True)
+    #image = serializers.CharField(required=True)
 
     class Meta:
         model = Product
@@ -18,11 +18,6 @@ class ProductSerializer(serializers.ModelSerializer):
 class ProductDetailSerializer(serializers.ModelSerializer):
     product = serializers.IntegerField(read_only=True)
     characteristic = serializers.IntegerField(read_only=True)
-    class Meta:
-        model = ProductDetail
-        fields = ('__all__')
-
-class ProductDetailViewSerializer(serializers.ModelSerializer):
     class Meta:
         model = ProductDetail
         fields = ('__all__')
