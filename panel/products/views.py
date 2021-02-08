@@ -1,3 +1,6 @@
+import base64
+
+from django.core.files.base import ContentFile
 from rest_framework.generics import ListAPIView
 from rest_framework.views import APIView
 from rest_framework.exceptions import NotFound as NotFoundError
@@ -89,7 +92,6 @@ class ProductCreateView(APIView):
                 brand = Brand.objects.get(id=data_product["brand"])
             except brand.DoesNotExist:
                 return Response("La Marca no existe", status=status.HTTP_400_BAD_REQUEST)
-         
 
             serializer_product = ProductSerializer(data=data_product)
    
@@ -98,7 +100,10 @@ class ProductCreateView(APIView):
                 product = Product()
                 product.name = data_product["name"]
                 product.description = data_product["description"]
-                product.image = data_product["image"]
+                if ';base64,' in data_product["image"]:
+                    format, imgstr = data_product["image"].split(';base64,')
+                    ext = format.split('/')[-1]
+                    product.image = ContentFile(base64.b64decode(imgstr), name='temp.' + ext)
                 product.coin = data_product["coin"]
                 product.price = data_product["price"]
                 product.category = category

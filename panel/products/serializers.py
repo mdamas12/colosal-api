@@ -9,6 +9,7 @@ from .models import *
 class ProductSerializer(serializers.ModelSerializer):
     category = serializers.IntegerField(read_only=True)
     brand = serializers.IntegerField(read_only=True)
+    image = serializers.CharField(required=True)
 
     class Meta:
         model = Product
