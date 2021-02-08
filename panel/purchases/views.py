@@ -149,7 +149,7 @@ class PurshaseDetailView(APIView):
                     purchase_detail = PurchaseDetail.objects.get(id=item_product["id"])
                     serializer_product = PurshaseDetailCreateSerializer(purchase_detail, data=item_product)   
                     if serializer_product.is_valid():
-                        print(item_product)
+                        #print(item_product)
                         #actualizacion de la cantidad en producto
                         product = Product.objects.get(id=item_product["product"])
                         product.quantity = product.quantity - purchase_detail.purchase_Received

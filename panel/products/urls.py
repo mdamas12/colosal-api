@@ -13,7 +13,8 @@ base_router.register(r'gallery', views.ProductGalleryViewSet)
 urlpatterns = [
    
     path(r'search/<int:pk>/', views.ProductSearchView.as_view()),
-    url(r'', views.ProductCreateView.as_view())
+    path(r'product-detail/<int:pk>/', views.ProductDetailView.as_view()),
+    url(r'', views.ProductCreateView.as_view()), 
     #url(r'', include(base_router.urls)),
     #url(r'list', ProductsListView.as_view()),
 ]
