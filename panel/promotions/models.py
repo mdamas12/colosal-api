@@ -13,11 +13,12 @@ class Promotion(TimeStampedModel):
 
     name = models.CharField(max_length=255)
     description = models.TextField(null=True,blank=True)
-    image = models.FileField(upload_to='uploads')
+    image = models.FileField(upload_to='uploads', null=True)
     price = models.DecimalField(max_digits=19, decimal_places=2)
     coin = models.CharField(max_length=20,choices=COINS,default="USD")
     category = models.ForeignKey(Category, on_delete=models.PROTECT)
     quantity = models.IntegerField(default=0)
+    status = models.CharField(max_length=20,default="ACTIVE")
 
     class Meta:
         verbose_name = "Promocion"
@@ -36,4 +37,4 @@ class PromotionDetail(TimeStampedModel):
         verbose_name = "Detalle de promocion"
         verbose_name_plural = "Detalles de promociones"
 
-    def __str__(self): return self.name
+    def __str__(self): return self.product

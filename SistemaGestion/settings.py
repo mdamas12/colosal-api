@@ -47,12 +47,13 @@ INSTALLED_APPS = [
     'panel.categories',
     'panel.characteristics',
     'panel.products',
-    'panel.combos',
+    'panel.promotions',
     'panel.providers',
     'panel.purchases',
     'panel.customers',
     'panel.payments',
     'panel.shoppingcart',
+    'panel.sales',
    
     
 ]

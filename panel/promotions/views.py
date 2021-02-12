@@ -5,31 +5,7 @@ from rest_framework.exceptions import NotFound as NotFoundError
 from rest_framework.pagination import PageNumberPagination
 from .models import Promotion, PromotionDetail
 from  panel.products.models import *
-from .serializers import PromotionSerializer, PromotionDetailSerializer, PromotionDetailViewSerializer
-
-
-class PromotionViewSet(
-    mixins.ListModelMixin,
-    mixins.RetrieveModelMixin,
-    mixins.CreateModelMixin,
-    mixins.UpdateModelMixin,
-    viewsets.GenericViewSet
-):
-    queryset = Promotion.objects.all().order_by('-modified')
-    permission_classes = (AllowAny,)
-    serializer_class = PromotionSerializer
-
-
-class PromotionDetailViewSet(
-    mixins.ListModelMixin,
-    mixins.RetrieveModelMixin,
-    mixins.CreateModelMixin,
-    mixins.UpdateModelMixin,
-    viewsets.GenericViewSet
-):
-    queryset = PromotionDetail.objects.all().order_by('-modified')
-    permission_classes = (AllowAny,)
-    serializer_class = PromotionDetailSerializer
+from .serializers import PromotionSerializer, PromotionDetailSerializer, PromotionDetailViewSerializer, PromotionFullSerializer
 
 
 
@@ -53,7 +29,7 @@ class PromottionCreateView(APIView):
 
         promotions = Promotion.objects.all()
         paginator = CustomPaginator()
-        serializer = paginator.generate_response(promotions, PromotionSerializer, request)
+        serializer = paginator.generate_response(promotions, PromotionFullSerializer, request)
         #serializer = ShoppingcartDetailSerializer(shoppingcart, many=True)
         return serializer    
     
@@ -95,6 +71,7 @@ class PromottionCreateView(APIView):
                 promotion.save()
 
                 #registro de detalle de compra
+                
                 if "Detail" in data:
                     
                     data_promDetail = data["Detail"]                   
@@ -121,11 +98,11 @@ class PromottionCreateView(APIView):
                         else:
                             return Response(serializer_detail.errors, status=status.HTTP_400_BAD_REQUEST)
                 
-
+                
                 
                 data_end = {
                     "Promotion": serializer_promotion.data,
-                    "Detail": detail_array,
+                     "Detail": detail_array,
                 }
 
                 return Response(data_end)
@@ -134,3 +111,18 @@ class PromottionCreateView(APIView):
                 return Response(serializer_promotion.errors, status=status.HTTP_400_BAD_REQUEST)
         
         return Response("Debe suministrar informacion de la promocion", status=status.HTTP_400_BAD_REQUEST)
+
+
+class PromotionDetailView(APIView):
+    
+    def get(self, request, pk, format=None):
+
+        """Buscar una promocion"""
+        try:
+            Promotion.objects.get(id=pk)
+        except Product.DoesNotExist:
+            return Response("EL Id de promocion no existe")
+        
+        promocion = Promotion.objects.get(id=pk)
+        serializer = PromotionFullSerializer(promocion, many=False)
+        return Response(serializer.data)
