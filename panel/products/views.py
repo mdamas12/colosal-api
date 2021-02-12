@@ -13,7 +13,6 @@ from rest_framework.permissions import AllowAny
 
 
 
-
 class CustomPaginator(PageNumberPagination):
     page_size = 25 # Number of objects to return in one page
 
@@ -100,10 +99,12 @@ class ProductCreateView(APIView):
                 product = Product()
                 product.name = data_product["name"]
                 product.description = data_product["description"]
+                """
                 if ';base64,' in data_product["image"]:
                     format, imgstr = data_product["image"].split(';base64,')
                     ext = format.split('/')[-1]
                     product.image = ContentFile(base64.b64decode(imgstr), name='temp.' + ext)
+                """
                 product.coin = data_product["coin"]
                 product.price = data_product["price"]
                 product.category = category
