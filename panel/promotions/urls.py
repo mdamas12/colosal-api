@@ -8,6 +8,7 @@ from . import views
 urlpatterns = [
    
     path(r'search/<int:pk>/', views.PromotionDetailView.as_view()),
+    path(r'promotion-detail/<int:pk>/', views.PromocionDetailDeleteView.as_view()),
     url(r'', views.PromottionCreateView.as_view()), 
   
 ]

@@ -13,7 +13,7 @@ class PromotionSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 class PromotionDetailSerializer(serializers.ModelSerializer):
-    product = serializers.IntegerField(read_only=True)
+    #product = serializers.IntegerField(read_only=True)
     class Meta:
         model = PromotionDetail
         fields = '__all__'
