@@ -15,7 +15,7 @@ class Sale(TimeStampedModel):
 
     COINS = Choices('USD', 'BS')
 
-    PaymentType = Choices('ZELLE', 'TRANSFERENCIA BS', 'TRANSFERENCIA $' 'PAGO MOVIL', 'EFECTIVO')
+    PaymentType = Choices('ZELLE', 'TRANSFERENCIA BS', 'TRANSFERENCIA $', 'PAGO MOVIL', 'EFECTIVO')
     description = models.TextField(null=True,blank=True)
     customer = models.ForeignKey(Customer, on_delete=models.PROTECT)
     payment_type = models.CharField(max_length=20, choices=PaymentType, default="TRANSFERENCIA BS")
@@ -34,8 +34,8 @@ class SaleDetail(TimeStampedModel):
 
     #STATUS = Choices('Imcomplete', 'Complete' )
 
-    sale = models.ForeignKey(Sale, related_name='sale_detail', on_delete=models.PROTECT)
-    product = models.ForeignKey(Product, on_delete=models.PROTECT)
+    sale = models.ForeignKey(Sale, related_name='detail_sale', on_delete=models.PROTECT)
+    product = models.ForeignKey(Product, related_name='SaleProduct', on_delete=models.PROTECT)
     sale_price = models.DecimalField(max_digits=19, decimal_places=2, default=0)
     quantity_sold = models.IntegerField(default=0)
     amount = models.DecimalField(max_digits=19, decimal_places=2, default=0)
@@ -45,4 +45,4 @@ class SaleDetail(TimeStampedModel):
         verbose_name = "Detalle de Venta"
         verbose_name_plural = "Detalles de ventas"
 
-    def __str__(self): return self.product
+    def __str__(self): return self.amount
