@@ -114,6 +114,9 @@ class SaleCreateView(APIView):
                         parcial_amount = parcial_amount +  (shoppingcart.quantity * product.price)
                         product.quantity = product.quantity - shoppingcart.quantity
                         product.save()
+                        
+                        shoppingcart.status = "PROCESADO"
+                        shoppingcart.save()
                         #shoppingcart.delete()
  
                     sale.amount = parcial_amount
@@ -137,8 +140,6 @@ class SalesDetailView(APIView):
           
         """Buscar venta y detalle"""
         sale = Sale.objects.get(id=pk)
-        #detalle_sale = SaleDetail.objects.filter(sale = pk)
-        #serializer = SaleDetailViewSerializer(detalle_sale, many=True)
         serializer = SaleViewchSerializer(sale, many=False)
         return Response(serializer.data)
     
