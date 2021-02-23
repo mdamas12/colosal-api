@@ -14,7 +14,9 @@ base_router = routers.SimpleRouter()
 urlpatterns = [
     path('detail/<int:pk>/', views.SalesDetailView.as_view()),
     path('product-sale/<int:pk>/', views.ProductSale.as_view()),
+    path('sale-panel/', views.SalespanelView.as_view()),
     url(r'', views.SaleCreateView.as_view()),
+   
     #url(r'^detail/$', views.PurshaseDetailCreate.as_view()),
     
 ]
