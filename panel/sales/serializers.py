@@ -25,24 +25,23 @@ class SaleDetailSerializer(serializers.ModelSerializer):
         fields = ('__all__')
 
 class SaleDetailViewSerializer(serializers.ModelSerializer):
-    #product = ProductListSearchSerializer()
-    #sale = SaleViewchSerializer()
+    product = ProductListSearchSerializer(many=False)
+    #sale = SaleSerializer()
 
     class Meta:
         model = SaleDetail
         fields = (
             'id',
-            'product',
             'sale_price',
             'quantity_sold',
             'amount',
             'status',
-
+            'product',
         )
 
 
 class SaleViewchSerializer(serializers.ModelSerializer):
-    sale_detail = SaleDetailViewSerializer()
+    detail_sale = SaleDetailViewSerializer(many=True)
     customer = CustomerDetailSerializer()
     bank = listpaymentsSerializer()
 
@@ -56,7 +55,7 @@ class SaleViewchSerializer(serializers.ModelSerializer):
             'coin',
             'amount',
             'status',
-            'sale_detail'
+            'detail_sale'
 
         )
 

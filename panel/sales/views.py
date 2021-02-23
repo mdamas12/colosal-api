@@ -35,16 +35,11 @@ class SaleCreateView(APIView):
      
     
     def get(self, request, format=None):
-        """Listar Todos Los Productos"""
+        """Listar Todas las ventas"""
         
         sales = Sale.objects.all()
         paginator = CustomPaginator()
         serializer = paginator.generate_response(sales, SaleViewchSerializer, request)
-        #serializer = ShoppingcartDetailSerializer(shoppingcart, many=True)
-
-        #sales = SaleDetail.objects.all()
-        #paginator = CustomPaginator()
-        #serializer = paginator.generate_response(sales, SaleDetailViewSerializer, request)
         return serializer    
         
 
@@ -83,7 +78,7 @@ class SaleCreateView(APIView):
                 sale.payment_type = data_sale["payment_type"]
                 sale.bank = bank
                 sale.coin = data_sale["coin"]
-                sale.status = "POR ENTREGAR"
+                sale.status = "POR VALIDAR"
                 sale.save()
 
      
@@ -103,16 +98,7 @@ class SaleCreateView(APIView):
                         
                         shoppingcart = Shoppingcart.objects.get(id=item_detail["shoppingcart"])     
                         product = Product.objects.get(id = shoppingcart.product.id)
-                        """
-                        data_saledetail["sale"] = sale
-                        data_saledetail["product"] = product
-                        data_saledetail["sale_price"] =  product.price
-                        data_saledetail["quantity_sold"] =  shoppingcart.quantity
-                        data_saledetail["amount"] =  shoppingcart.quantity * product.price
-                        data_saledetail["status"] = "POR ENTREGAR"
-                        """
-                        #serializer_detail = SaleDetailSerializer(data=data_saledetail) 
-                        #if serializer_detail.is_valid():
+                
                             
                         sale_detail = SaleDetail()
                         sale_detail.sale = sale
@@ -123,19 +109,19 @@ class SaleCreateView(APIView):
                         sale_detail.status = "POR ENTREGAR"
                         sale_detail.save()
                         
-                        #sale_detail_array.append(SaleDetailViewSerializer(sale_detail).data) 
-                        sale_detail_array.append(sale_detail)                           
+                        sale_detail_array.append(SaleDetailViewSerializer(sale_detail).data) 
+                        #sale_detail_array.append(sale_detail)                           
                         parcial_amount = parcial_amount +  (shoppingcart.quantity * product.price)
-                        shoppingcart.status = "PROCESADO"
-                        shoppingcart.save()
+                        product.quantity = product.quantity - shoppingcart.quantity
+                        product.save()
+                        #shoppingcart.delete()
  
                     sale.amount = parcial_amount
                     sale.save()
                     
                 data_end = {
-                    "Sale": serializer_sale.data,
-                    #"Sale": serializer_sale.data,
-                    "Detail": sale_detail_array,
+                    "Sale": SaleViewchSerializer(sale).data,
+                    "Detail": sale_detail_array
                 }
 
                 return Response(data_end)
@@ -144,4 +130,63 @@ class SaleCreateView(APIView):
                 return Response(serializer_sale.errors, status=status.HTTP_400_BAD_REQUEST)
         
         return Response("Debe suministrar informacion", status=status.HTTP_400_BAD_REQUEST)
+
+class SalesDetailView(APIView):
+      
+    def get(self, request, pk, format=None):
+          
+        """Buscar venta y detalle"""
+        sale = Sale.objects.get(id=pk)
+        #detalle_sale = SaleDetail.objects.filter(sale = pk)
+        #serializer = SaleDetailViewSerializer(detalle_sale, many=True)
+        serializer = SaleViewchSerializer(sale, many=False)
+        return Response(serializer.data)
     
+    def put(self, request, pk, format=None):
+
+        data = request.data
+
+        if "sale" in data: 
+            data_sale = data["sale"]
+            
+            try:
+                 Sale.objects.get(id=pk)
+            except Sale.DoesNotExist:
+                return Response("La venta no existe", status=status.HTTP_400_BAD_REQUEST)
+            
+            sale = Sale.objects.get(id=pk)
+            sale.status = data_sale["status"]
+            sale.save()
+            return Response(SaleViewchSerializer(sale).data)
+
+    def delete(self, request, pk, format=None):
+
+        
+        try:
+            Sale.objects.get(id=pk)
+        except Sale.DoesNotExist:
+            return Response("La venta no existe", status=status.HTTP_400_BAD_REQUEST)
+            
+        sale = Sale.objects.get(id=pk)
+        sale.delete()
+        return Response("La venta ha sido eliminada")
+
+class ProductSale(APIView):
+      
+    
+    def put(self, request, pk, format=None):
+
+        data = request.data
+
+        if "sale_detail" in data: 
+            data_sale_detail = data["sale_detail"]
+            
+            try:
+                 SaleDetail.objects.get(id=pk)
+            except SaleDetail.DoesNotExist:
+                return Response("el producto no existe", status=status.HTTP_400_BAD_REQUEST)
+            
+            Prdoduct_sale = SaleDetail.objects.get(id=pk)
+            Prdoduct_sale.status = data_sale_detail["status"]
+            Prdoduct_sale.save()
+            return Response("Status del Producto actualizado")
