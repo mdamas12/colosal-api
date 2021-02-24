@@ -49,6 +49,7 @@ class SaleViewchSerializer(serializers.ModelSerializer):
         model = Sale
         fields = (
             'id',
+            'created',
             'customer',
             'PaymentType',
             'bank',
