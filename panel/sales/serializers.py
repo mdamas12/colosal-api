@@ -51,7 +51,7 @@ class SaleViewchSerializer(serializers.ModelSerializer):
             'id',
             'created',
             'customer',
-            'PaymentType',
+            'payment_type',
             'bank',
             'coin',
             'amount',
