@@ -22,7 +22,8 @@ from rest_framework_swagger.views import get_swagger_view
 
 from users.views import UserViewSet
 
-schema_view = get_swagger_view(title='Pastebin API')
+schema_view = get_swagger_view(title='API Sistema-bodegon')
+
 
 base_router = routers.SimpleRouter()
 base_router.register(r'users', UserViewSet)

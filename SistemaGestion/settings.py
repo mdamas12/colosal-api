@@ -54,12 +54,14 @@ INSTALLED_APPS = [
     'panel.categories',
     'panel.characteristics',
     'panel.products',
+    'panel.promotions',
     'panel.combos',
     'panel.providers',
     'panel.purchases',
     'panel.customers',
     'panel.payments',
-
+    'panel.shoppingcart',
+    'panel.sales',
 ]
 
 SITE_ID = 1
