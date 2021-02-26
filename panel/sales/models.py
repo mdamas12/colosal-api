@@ -1,3 +1,4 @@
+from django.contrib.auth.models import User
 from django.db import models
 from model_utils import Choices
 from model_utils.models import TimeStampedModel
@@ -7,7 +8,6 @@ from rest_framework import status
 from rest_framework.response import Response
 
 from panel.products.models import *
-from panel.customers.models import * 
 from panel.payments.models import * 
 from panel.shoppingcart.models import * 
 
@@ -17,7 +17,7 @@ class Sale(TimeStampedModel):
 
     PaymentType = Choices('ZELLE', 'TRANSFERENCIA BS', 'TRANSFERENCIA $', 'PAGO MOVIL', 'EFECTIVO')
     description = models.TextField(null=True,blank=True)
-    customer = models.ForeignKey(Customer, on_delete=models.PROTECT)
+    customer = models.ForeignKey(User, on_delete=models.PROTECT)
     payment_type = models.CharField(max_length=20, choices=PaymentType, default="TRANSFERENCIA BS")
     bank = models.ForeignKey(Bank, on_delete=models.PROTECT)
     coin = models.CharField(max_length=20,choices=COINS,default="USD")

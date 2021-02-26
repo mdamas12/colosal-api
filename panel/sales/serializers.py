@@ -1,7 +1,7 @@
 from rest_framework import serializers
 from panel.products.serializers import ProductListSearchSerializer
-from panel.customers.serializers import CustomerDetailSerializer
 from panel.payments.serializers import listpaymentsSerializer
+from users.serializers import UserSerializer
 from .models import *
 
 # serializador para guardar una venta
@@ -42,7 +42,7 @@ class SaleDetailViewSerializer(serializers.ModelSerializer):
 
 class SaleViewchSerializer(serializers.ModelSerializer):
     detail_sale = SaleDetailViewSerializer(many=True)
-    customer = CustomerDetailSerializer()
+    customer = UserSerializer()
     bank = listpaymentsSerializer()
 
     class Meta:

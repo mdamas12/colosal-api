@@ -11,7 +11,6 @@ from rest_framework import mixins, viewsets
 from rest_framework.permissions import AllowAny
 
 from panel.products.models import *
-from panel.customers.models import *
 
 # Create your views here.
 
@@ -55,7 +54,7 @@ class ShoppingcartListall(ListAPIView):
     
     """Listar Todo el carro de compra"""
 
-    queryset = Customer.objects.all()
-    serializer_class = ShcCustomerSerializer
+    queryset = Shoppingcart.objects.all()
+    serializer_class = ShoppingcartDetailSerializer
     pagination_class = PageNumberPagination
     

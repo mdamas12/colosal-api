@@ -55,7 +55,6 @@ INSTALLED_APPS = [
     'panel.characteristics',
     'panel.products',
     'panel.promotions',
-    'panel.combos',
     'panel.providers',
     'panel.purchases',
     'panel.customers',
@@ -142,6 +141,9 @@ REST_AUTH_REGISTER_SERIALIZERS = {
 REST_AUTH_SERIALIZERS = {
     'REGISTER_SERIALIZER': 'users.serializers.RegisterSerializer',
 }
+
+EMAIL_BACKEND = 'django.core.mail.backends.filebased.EmailBackend'
+EMAIL_FILE_PATH = os.path.join(BASE_DIR, 'tmp/email')
 
 # Internationalization
 # https://docs.djangoproject.com/en/2.0/topics/i18n/

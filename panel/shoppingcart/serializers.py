@@ -30,7 +30,7 @@ class ShcCustomerSerializer(serializers.ModelSerializer):
     shoppingcart = ShoppingcartDetailSerializer(many=True)
 
     class Meta:
-        model = Customer
+        model = Shoppingcart
         fields = (
             'id',
             'fullname',
