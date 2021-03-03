@@ -13,8 +13,4 @@ class CharacteristicViewSerializer(serializers.ModelSerializer):
         fields = (
             'id',
             'name',
-<<<<<<< HEAD
         )
-=======
-        )
->>>>>>> master
