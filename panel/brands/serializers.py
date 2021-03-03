@@ -6,3 +6,12 @@ class BrandSerializer(serializers.ModelSerializer):
     class Meta:
         model = Brand
         fields = '__all__'
+        
+class BrandDetailSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Brand
+        fields = (
+            'id',
+            'name'
+        )

@@ -17,11 +17,29 @@ from django.contrib import admin
 from django.urls import path
 from django.conf.urls import url
 from django.conf.urls import include
+<<<<<<< HEAD
 from rest_framework_swagger.views import get_swagger_view
 
 schema_view = get_swagger_view(title='Pastebin API')
 
 urlpatterns = [
+=======
+from rest_framework import routers
+from rest_framework_swagger.views import get_swagger_view
+
+from users.views import UserViewSet
+
+schema_view = get_swagger_view(title='API Sistema-bodegon')
+
+
+base_router = routers.SimpleRouter()
+base_router.register(r'users', UserViewSet)
+
+urlpatterns = [
+    url(r'^', include(base_router.urls)),
+    url(r'^auth/', include('rest_auth.urls')),
+    url(r'^auth/registration/', include('rest_auth.registration.urls')),
+>>>>>>> 175aeecf54c5ecc9e477fa458cf712a4d870df30
     url(r'^docs/', schema_view),
     url(r'^panel/', include('panel.urls')),
     path('admin/', admin.site.urls),
