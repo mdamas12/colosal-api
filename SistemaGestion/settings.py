@@ -41,13 +41,29 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+<<<<<<< HEAD
     'rest_framework_swagger',
+=======
+    'django.contrib.sites',
+    'rest_framework_swagger',
+    'rest_framework',
+    'rest_framework.authtoken',
+    'rest_auth',
+    'allauth',
+    'allauth.account',
+    'rest_auth.registration',
+>>>>>>> 175aeecf54c5ecc9e477fa458cf712a4d870df30
     'panel',
     'panel.brands',
     'panel.categories',
     'panel.characteristics',
     'panel.products',
+<<<<<<< HEAD
     'panel.promotions',
+=======
+<<<<<<< HEAD
+    'panel.combos',
+>>>>>>> master
     'panel.providers',
     'panel.purchases',
     'panel.customers',
@@ -58,6 +74,19 @@ INSTALLED_APPS = [
     
 ]
 
+=======
+    'panel.promotions',
+    'panel.providers',
+    'panel.purchases',
+    'panel.customers',
+    'panel.payments',
+    'panel.shoppingcart',
+    'panel.sales',
+]
+
+SITE_ID = 1
+
+>>>>>>> 175aeecf54c5ecc9e477fa458cf712a4d870df30
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -127,8 +156,25 @@ REST_FRAMEWORK = {
     'PAGE_SIZE': 25
 }
 
+<<<<<<< HEAD
 
 
+=======
+<<<<<<< HEAD
+=======
+REST_AUTH_REGISTER_SERIALIZERS = {
+    'REGISTER_SERIALIZER': 'users.serializers.RegisterSerializer',
+}
+
+REST_AUTH_SERIALIZERS = {
+    'REGISTER_SERIALIZER': 'users.serializers.RegisterSerializer',
+}
+
+EMAIL_BACKEND = 'django.core.mail.backends.filebased.EmailBackend'
+EMAIL_FILE_PATH = os.path.join(BASE_DIR, 'tmp/email')
+
+>>>>>>> 175aeecf54c5ecc9e477fa458cf712a4d870df30
+>>>>>>> master
 # Internationalization
 # https://docs.djangoproject.com/en/2.0/topics/i18n/
 
@@ -146,4 +192,8 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.0/howto/static-files/
 
+<<<<<<< HEAD
 STATIC_URL = '/static/'
+=======
+STATIC_URL = '/static/'
+>>>>>>> 175aeecf54c5ecc9e477fa458cf712a4d870df30

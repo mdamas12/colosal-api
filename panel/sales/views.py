@@ -6,7 +6,10 @@ from rest_framework.generics import ListAPIView
 from rest_framework.decorators import api_view
 from django.conf import settings
 
+<<<<<<< HEAD
 from panel.customers.models import *
+=======
+>>>>>>> master
 from panel.payments.models import *
 from panel.products.models import *
 from .models import *
@@ -207,11 +210,19 @@ class SalespanelView(APIView):
             data_sale = data["sale"]
             
             try:
+<<<<<<< HEAD
                  Customer.objects.get(id=data_sale["customer"])
             except Customer.DoesNotExist:
                 return Response("El cliente no existe", status=status.HTTP_400_BAD_REQUEST)
             
             customer = Customer.objects.get(id=data_sale["customer"])
+=======
+                 User.objects.get(id=data_sale["customer"])
+            except User.DoesNotExist:
+                return Response("El cliente no existe", status=status.HTTP_400_BAD_REQUEST)
+            
+            customer = User.objects.get(id=data_sale["customer"])
+>>>>>>> master
 
             try:
                  Bank.objects.get(id=data_sale["bank"])
