@@ -12,8 +12,8 @@ from panel.products.models import *
 
 class Shoppingcart(TimeStampedModel):
 
-    customer = models.ForeignKey(User, related_name='shoppingcart', on_delete=models.PROTECT)
-    product = models.ForeignKey(Product, on_delete=models.PROTECT)
+    customer = models.ForeignKey(User, related_name='shoppingcart', on_delete=models.DO_NOTHING)
+    product = models.ForeignKey(Product, on_delete=models.DO_NOTHING)
     quantity = models.IntegerField(default=0)
     amount = models.DecimalField(max_digits=19, decimal_places=2)
     status = models.CharField(max_length=15)

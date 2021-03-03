@@ -16,11 +16,7 @@ class Promotion(TimeStampedModel):
     image = models.FileField(upload_to='uploads', null=True)
     price = models.DecimalField(max_digits=19, decimal_places=2)
     coin = models.CharField(max_length=20,choices=COINS,default="USD")
-<<<<<<< HEAD
-    category = models.ForeignKey(Category, on_delete=models.PROTECT)
-=======
     category = models.ForeignKey(Category, on_delete=models.PROTECT, related_name='%(class)s_category')
->>>>>>> master
     quantity = models.IntegerField(default=0)
     status = models.CharField(max_length=20,default="ACTIVE")
 
@@ -34,15 +30,7 @@ class Promotion(TimeStampedModel):
 class PromotionDetail(TimeStampedModel):
 
     promotion = models.ForeignKey(Promotion, related_name='promotion_detail', default=0, on_delete=models.PROTECT)
-<<<<<<< HEAD
-    product = models.ForeignKey(Product, on_delete=models.PROTECT) 
-=======
-<<<<<<<< HEAD:panel/promotions/models.py
     product = models.ForeignKey(Product, on_delete=models.PROTECT, related_name='%(class)s_product')
-========
-    product = models.ForeignKey(Product, on_delete=models.PROTECT) 
->>>>>>>> master:panel/combos/models.py
->>>>>>> master
     quantity = models.IntegerField(default=0)
 
     class Meta:

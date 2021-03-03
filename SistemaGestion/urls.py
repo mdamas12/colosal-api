@@ -17,13 +17,6 @@ from django.contrib import admin
 from django.urls import path
 from django.conf.urls import url
 from django.conf.urls import include
-<<<<<<< HEAD
-from rest_framework_swagger.views import get_swagger_view
-
-schema_view = get_swagger_view(title='API Sistema-bodegon')
-
-urlpatterns = [
-=======
 from rest_framework import routers
 from rest_framework_swagger.views import get_swagger_view
 
@@ -39,8 +32,8 @@ urlpatterns = [
     url(r'^', include(base_router.urls)),
     url(r'^auth/', include('rest_auth.urls')),
     url(r'^auth/registration/', include('rest_auth.registration.urls')),
->>>>>>> 175aeecf54c5ecc9e477fa458cf712a4d870df30
     url(r'^docs/', schema_view),
     url(r'^panel/', include('panel.urls')),
+    url(r'^web/', include('web.urls')),
     path('admin/', admin.site.urls),
 ]

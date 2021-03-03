@@ -15,7 +15,7 @@ class Purchase(TimeStampedModel):
 
     date = models.CharField(max_length=50)
     description = models.TextField(null=True,blank=True)
-    provider = models.ForeignKey(Provider, on_delete=models.PROTECT)
+    provider = models.ForeignKey(Provider, on_delete=models.DO_NOTHING)
     invoice = models.TextField(null=True,blank=True)
     coin = models.CharField(max_length=20,choices=COINS,default="USD")
     amount = models.DecimalField(max_digits=19, decimal_places=2)
@@ -30,8 +30,8 @@ class PurchaseDetail(TimeStampedModel):
 
     #STATUS = Choices('Imcomplete', 'Complete' )
 
-    purchase = models.ForeignKey(Purchase, related_name='PurchaseDetail', on_delete=models.PROTECT)
-    product = models.ForeignKey(Product, related_name='PurchaseProduct', on_delete=models.PROTECT)
+    purchase = models.ForeignKey(Purchase, related_name='PurchaseDetail', on_delete=models.DO_NOTHING)
+    product = models.ForeignKey(Product, related_name='PurchaseProduct', on_delete=models.DO_NOTHING)
     purchase_price = models.DecimalField(max_digits=19, decimal_places=2)
     purchase_quantity = models.IntegerField(default=0)
     purchase_Received = models.IntegerField(default=0)

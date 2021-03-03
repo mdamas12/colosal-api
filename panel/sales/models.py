@@ -17,7 +17,7 @@ class Sale(TimeStampedModel):
 
     PaymentType = Choices('ZELLE', 'TRANSFERENCIA BS', 'TRANSFERENCIA $', 'PAGO MOVIL', 'EFECTIVO')
     description = models.TextField(null=True,blank=True)
-    customer = models.ForeignKey(User, on_delete=models.PROTECT)
+    customer = models.ForeignKey(User, on_delete=models.DO_NOTHING)
     payment_type = models.CharField(max_length=20, choices=PaymentType, default="TRANSFERENCIA BS")
     bank = models.ForeignKey(Bank, on_delete=models.PROTECT)
     coin = models.CharField(max_length=20,choices=COINS,default="USD")
