@@ -5,6 +5,7 @@ from rest_framework.exceptions import NotFound as NotFoundError
 from rest_framework.generics import ListAPIView
 from rest_framework.decorators import api_view
 from django.conf import settings
+from django.db.models import Q
 import random
 
 from  panel.categories.models import *
@@ -47,6 +48,15 @@ class ProductsFeaturedView(APIView):
         """Listar Productos destacados"""
          
         products = Product.objects.all().order_by('?')[:10]
+        paginator = CustomPaginator()
+        serializer = paginator.generate_response(products, ProductListSearchSerializer, request)       
+        return serializer
+
+class ProductSearch(APIView):
+      
+    def get(self, request, search, format=None):
+        """busqueda de productos"""
+        products = Product.objects.filter(Q(name__icontains = search))
         paginator = CustomPaginator()
         serializer = paginator.generate_response(products, ProductListSearchSerializer, request)       
         return serializer

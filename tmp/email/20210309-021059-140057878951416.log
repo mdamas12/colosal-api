@@ -1,0 +1,18 @@
+Content-Type: text/plain; charset="utf-8"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Subject: [example.com] Please Confirm Your E-mail Address
+From: webmaster@localhost
+To: prueba@gmail.com
+Date: Tue, 09 Mar 2021 02:10:59 -0000
+Message-ID: <161525585999.9.12806712937436206991@73c5807de203>
+
+Hello from example.com!
+
+You're receiving this e-mail because user userprueba has given your e-mail address to register an account on example.com.
+
+To confirm this is correct, go to http://localhost:8000/auth/registration/account-confirm-email/MQ:1lJRpr:yonb9TSs3aUMxXjqLkUhAfnT9D0/
+
+Thank you for using example.com!
+example.com
+-------------------------------------------------------------------------------

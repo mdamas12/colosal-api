@@ -6,8 +6,8 @@ class UserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        #fields = '__all__'
-        exclude = ('password',)
+        fields = '__all__'
+        #exclude = ('password',)
 
 
 class RegisterSerializer(RegisterSerializer):
@@ -16,7 +16,7 @@ class RegisterSerializer(RegisterSerializer):
 
     def save(self, validated_data):
         user = super(RegisterSerializer, self).save(validated_data)
-        print(validated_data.data)
+        #print(validated_data.data)
         user.is_superuser = validated_data.data["is_superuser"]
         user.save()
         return user

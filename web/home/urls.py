@@ -13,6 +13,7 @@ base_router = routers.SimpleRouter()
 
 urlpatterns = [
     #path('category-search/<int:pk>/', views.CategoryDetailView.as_view()),
+    path(r'products-search/<str:search>/', ProductSearch.as_view()),
     url(r'categories-featured/', categoriesFeaturedView.as_view()),
     url(r'products-featured/', ProductsFeaturedView.as_view()),
     url(r'promotions-featured/', PromotionsFeaturedView.as_view()),

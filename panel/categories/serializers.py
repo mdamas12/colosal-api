@@ -13,5 +13,6 @@ class CategoriesDetailSerializer(serializers.ModelSerializer):
         model = Category
         fields = (
             'id',
-            'name'
+            'name',
+            'image'
         )
