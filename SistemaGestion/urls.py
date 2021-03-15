@@ -34,5 +34,6 @@ urlpatterns = [
     url(r'^auth/registration/', include('rest_auth.registration.urls')),
     url(r'^docs/', schema_view),
     url(r'^panel/', include('panel.urls')),
+    url(r'^user/', include('users.urls')),
     path('admin/', admin.site.urls),
 ]
