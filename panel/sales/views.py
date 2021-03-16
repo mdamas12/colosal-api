@@ -4,6 +4,7 @@ from rest_framework.pagination import PageNumberPagination
 from rest_framework.exceptions import NotFound as NotFoundError
 from rest_framework.generics import ListAPIView
 from rest_framework.decorators import api_view
+from django.db.models import Q
 from django.conf import settings
 
 from panel.payments.models import *
@@ -282,3 +283,30 @@ class SalespanelView(APIView):
         return Response("Debe suministrar informacion", status=status.HTTP_400_BAD_REQUEST)
 
 
+class CustomerSearch(APIView):
+      
+    def get(self, request, search, format=None):
+        """busqueda de clientes"""
+        customers = User.objects.filter(Q(email__icontains = search))
+        serializer = UserSerializer(customers, many=True)
+        return Response(serializer.data)
+
+class SaleListStatusView(APIView):
+      
+    def get(self, request, pk, format=None):
+          
+        """Listar venta por status"""
+        if pk==1:            
+            sale = Sale.objects.filter(status="POR VALIDAR")
+            serializer = SaleViewchSerializer(sale, many=True)
+            return Response(serializer.data)
+        elif pk==2:
+            sale = Sale.objects.filter(status="POR ENTREGAR")
+            serializer = SaleViewchSerializer(sale, many=True)
+            return Response(serializer.data)
+        elif pk==3:
+            sale = Sale.objects.filter(status="PROCESADA")
+            serializer = SaleViewchSerializer(sale, many=True)
+            return Response(serializer.data)
+        else:
+            return Response("el Status de venta no existe", status=status.HTTP_400_BAD_REQUEST)

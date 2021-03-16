@@ -5,6 +5,7 @@ from rest_framework.generics import ListAPIView
 from rest_framework.views import APIView
 from rest_framework.exceptions import NotFound as NotFoundError
 from rest_framework.pagination import PageNumberPagination
+from django.db.models import Q
 from .serializers import *
 from .repositories import *
 
@@ -360,4 +361,11 @@ class ProductDetailView(APIView):
         detail_product.delete()
         return Response("se ha eliminado el detalle para este producto",status=status.HTTP_204_NO_CONTENT)
 
-            
+class ProductCoincidence(APIView):
+      
+    def get(self, request, search, format=None):
+        """busqueda de productos"""
+        products = Product.objects.filter(Q(name__icontains = search))
+        paginator = CustomPaginator()
+        serializer = paginator.generate_response(products, ProductListSearchSerializer, request)       
+        return serializer

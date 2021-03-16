@@ -9,5 +9,7 @@ base_router.register(r'', CategoryViewSet)
 
 urlpatterns = [
     path('detail/<int:pk>/', CategoryDetailView.as_view()),
+    url('save', CategoryCreateView.as_view()),
+    url('list-all', listAllCategories.as_view()),
     url(r'', include(base_router.urls)),
 ]
