@@ -1,11 +1,14 @@
 import base64
-
 from django.core.files.base import ContentFile
 from rest_framework.generics import ListAPIView
 from rest_framework.views import APIView
 from rest_framework.exceptions import NotFound as NotFoundError
 from rest_framework.pagination import PageNumberPagination
+from rest_framework.response import Response
+from rest_framework import status
 from django.db.models import Q
+
+from .models import *
 from .serializers import *
 from .repositories import *
 
@@ -100,6 +103,7 @@ class ProductCreateView(APIView):
                 product = Product()
                 product.name = data_product["name"]
                 product.description = data_product["description"]
+                product.image =  data_product["image"]
                 """
                 if ';base64,' in data_product["image"]:
                     format, imgstr = data_product["image"].split(';base64,')
@@ -223,12 +227,7 @@ class ProductSearchView(APIView):
                 product = Product.objects.get(id=pk)
                 product.name = data_product["name"]
                 product.description = data_product["description"]
-                """
-                if data_product["image"] and ';base64,' in data_product["image"]:
-                    format, imgstr = data_product["image"].split(';base64,')
-                    ext = format.split('/')[-1]
-                    product.image = ContentFile(base64.b64decode(imgstr), name='temp.' + ext)
-                """
+                product.image =  data_product["image"]
                 product.coin = data_product["coin"]
                 product.price = data_product["price"]
                 product.category = category

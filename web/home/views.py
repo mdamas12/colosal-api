@@ -37,20 +37,18 @@ class categoriesFeaturedView(APIView):
     def get(self, request, format=None):
         """Listar Catagorias destacadas"""
          
-        categories = Category.objects.all().order_by('?')[:10]
-        paginator = CustomPaginator()
-        serializer = paginator.generate_response(categories, CategoriesDetailSerializer, request)       
-        return serializer
+        categories = Category.objects.all().order_by('?')[:12] 
+        serializer = CategoriesDetailSerializer(categories, many=True)    
+        return Response(serializer.data)
         
 class ProductsFeaturedView(APIView):
       
     def get(self, request, format=None):
         """Listar Productos destacados"""
          
-        products = Product.objects.all().order_by('?')[:10]
-        paginator = CustomPaginator()
-        serializer = paginator.generate_response(products, ProductListSearchSerializer, request)       
-        return serializer
+        products = Product.objects.all().order_by('?')[:12]
+        serializer = ProductListSearchSerializer(products, many=True)      
+        return Response(serializer.data)
 
 class ProductSearch(APIView):
       
@@ -66,10 +64,9 @@ class PromotionsFeaturedView(APIView):
     def get(self, request, format=None):
         """Listar Productos destacados"""
          
-        promotions = Promotion.objects.all().order_by('?')[:10]
-        paginator = CustomPaginator()
-        serializer = paginator.generate_response(promotions, PromotionFullSerializer, request)       
-        return serializer
+        promotions = Promotion.objects.all().order_by('?')[:12]
+        serializer = PromotionFullSerializer(promotions, many=True)      
+        return Response(serializer.data)
    
 class CategoryDetailView(APIView):
       
@@ -80,4 +77,21 @@ class CategoryDetailView(APIView):
         serializer = CategoriesDetailSerializer(category, many=False)
         return Response(serializer.data)
     
+
+class ProductsOrderbyView(APIView):
+      
+    def get(self, request, pk, format=None):
+        """Listar Productos ordenados por"""
+        if pk==1:     
+            products = Product.objects.all().order_by('name')
+            paginator = CustomPaginator()
+            serializer = paginator.generate_response(products, ProductListSearchSerializer, request)       
+            return serializer
+        elif pk==2:
+            products = Product.objects.all().order_by('category')
+            paginator = CustomPaginator()
+            serializer = paginator.generate_response(products, ProductListSearchSerializer, request)       
+            return serializer
+        else:
+            return Response({"error": "el orden ingresado no es valido"}, status=status.HTTP_400_BAD_REQUEST)
 
