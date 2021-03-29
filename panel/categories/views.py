@@ -13,6 +13,7 @@ from .serializers import CategorySerializer, CategoriesDetailSerializer
 
 class CategoryViewSet(
     mixins.ListModelMixin,
+    mixins.DestroyModelMixin,
     mixins.RetrieveModelMixin,
     mixins.CreateModelMixin,
     mixins.UpdateModelMixin,
