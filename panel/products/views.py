@@ -115,65 +115,6 @@ class ProductCreateView(APIView):
 
             return Response("Debe suministrar informacion de producto", status=status.HTTP_400_BAD_REQUEST)
 
-        """ 
-                #registro de detalle de compra
-                if "features" in data:
-                    
-                    data_features = data["features"]                   
-                    
-                    for item_features in data_features:
-                        #print(item_features)
-                        try:    
-                            characteristic = Characteristic.objects.get(id=item_features['feature'])
-                        except characteristic.DoesNotExist:
-                            return Response("La Caracteristica no existe", status=status.HTTP_400_BAD_REQUEST)
-                        
-                        serializer_feature = ProductDetailSerializer(data=item_features)
-                        if serializer_feature.is_valid():
-                                                    
-                            feature = ProductDetail()
-                            feature.product = product
-                            feature.characteristic = characteristic
-                            feature.description = item_features['description']
-                            feature.save()
-                            features_array.append(serializer_feature.data)
-                            features_array.append(ProductDetailViewSerializer(feature).data)
-                        else:
-                            return Response(serializer_feature.errors, status=status.HTTP_400_BAD_REQUEST)
-                
-
-                if "gallery" in data:
-                    
-                    data_gallery = data["gallery"]
-                    
-
-                    for item_gallery in data_gallery:
-                        
-                        serializer_gallery = ProductGalleryMixinSerializer(data=item_gallery)
-                        if serializer_gallery.is_valid():
-                                                    
-                            gallery = ProductGallery()
-                            gallery.product = product
-                            gallery.image = item_gallery['image']
-                            gallery.save()
-                            gallery_array.append(serializer_gallery.data)
-                        else:
-                            return Response(serializer_gallery.errors, status=status.HTTP_400_BAD_REQUEST)
-                
-                data_end = {
-                    "Product": serializer_product.data,
-                    "Detail": features_array,
-                    "Gallery": gallery_array,
-                }
-
-                return Response(data_end)
-            else:
-                
-                return Response(serializer_product.errors, status=status.HTTP_400_BAD_REQUEST)
-        
-        return Response("Debe suministrar informacion de producto", status=status.HTTP_400_BAD_REQUEST)
-    """
-
 class FeaturesCreateView(APIView):
 
     def post(self,request,format=None):
