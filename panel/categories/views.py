@@ -56,8 +56,10 @@ class CategoryCreateView(APIView):
                 product.image = ContentFile(base64.b64decode(imgstr), name='temp.' + ext)
             """
             category.save()
-            return Response(serializer_categories.data)
-           
+            new_category = Category.objects.latest('created')
+            serializer = CategoriesDetailSerializer(new_category, many=False)
+            return Response(serializer.data,status=status.HTTP_201_CREATED)
+        
         else:
             return Response(request.data, status=status.HTTP_400_BAD_REQUEST)
     

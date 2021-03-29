@@ -6,10 +6,13 @@ from .models import *
 
 
 class CategorySerializer(serializers.ModelSerializer):
-    #files = serializers.FileField() 
     class Meta:
         model = Category
-        fields = '__all__'
+        fields = (
+            'id',
+            'name',
+            'image'
+        )
 
 class CategoriesDetailSerializer(serializers.ModelSerializer):
 

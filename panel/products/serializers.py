@@ -7,8 +7,8 @@ from .models import *
 
 # serializador para guardar producto
 class ProductSerializer(serializers.ModelSerializer):
-    category = serializers.IntegerField(read_only=True)
-    brand = serializers.IntegerField(read_only=True)
+    #category = serializers.IntegerField(read_only=True)
+    #brand = serializers.IntegerField(read_only=True)
     #image = serializers.CharField(required=True)
 
     class Meta:
@@ -16,8 +16,8 @@ class ProductSerializer(serializers.ModelSerializer):
         fields = ('__all__')
 
 class ProductDetailSerializer(serializers.ModelSerializer):
-    product = serializers.IntegerField(read_only=True)
-    characteristic = serializers.IntegerField(read_only=True)
+    #product = serializers.IntegerField(read_only=True)
+    #characteristic = serializers.IntegerField(read_only=True)
     class Meta:
         model = ProductDetail
         fields = ('__all__')
@@ -42,7 +42,7 @@ class ProductDetailMixinSerializer(serializers.ModelSerializer):
 
 
 class ProductGalleryMixinSerializer(serializers.ModelSerializer):
-
+   
     class Meta:
         model = ProductGallery
         fields = ('__all__')
@@ -62,6 +62,7 @@ class ProductListSearchSerializer(serializers.ModelSerializer):
     category = CategoriesDetailSerializer(many=False)
     brand = BrandDetailSerializer(many=False)
     detail_product = ProductDetailViewSerializer(many=True)
+    picture = ProductGalleryMixinSerializer(many=True)
     class Meta:
         model = Product
         fields = (
@@ -74,7 +75,8 @@ class ProductListSearchSerializer(serializers.ModelSerializer):
             'image',
             'category',
             'brand',
-            'detail_product'
+            'detail_product',
+            'picture'
             
         )
 

@@ -66,7 +66,7 @@ class ProductCreateView(APIView):
     def get(self, request, format=None):
         """Listar Todos Los Productos"""
 
-        products = Product.objects.all()
+        products = Product.objects.all().order_by('created').reverse()
         paginator = CustomPaginator()
         serializer = paginator.generate_response(products, ProductListSearchSerializer, request)
         #serializer = ShoppingcartDetailSerializer(shoppingcart, many=True)
@@ -75,48 +75,47 @@ class ProductCreateView(APIView):
 
     def post(self,request,format=None):
         """Guardar un Producto"""
-        
+       
         data = request.data
-        features_array = []
-        gallery_array = []
-        #print(data)
-
-        #if "purchase" in data and "products" in data:
-        if "product" in data:
-            
-            data_product = data["product"]
-            
+        print(data)
+        if data:            
             try:
-                category = Category.objects.get(id=data_product["category"])
-            except category.DoesNotExist:
+                Category.objects.get(id=data["category"])
+            except Category.DoesNotExist:
                 return Response("La categoria no existe", status=status.HTTP_400_BAD_REQUEST)
-
+            category = Category.objects.get(id=data["category"])
             try:
-                brand = Brand.objects.get(id=data_product["brand"])
+                Brand.objects.get(id=data["brand"])
             except brand.DoesNotExist:
                 return Response("La Marca no existe", status=status.HTTP_400_BAD_REQUEST)
-
-            serializer_product = ProductSerializer(data=data_product)
+            brand = Brand.objects.get(id=data["brand"])
+            
+            serializer_product = ProductSerializer(data=data, many=False)
    
             if serializer_product.is_valid():
-
+                
                 product = Product()
-                product.name = data_product["name"]
-                product.description = data_product["description"]
-                product.image =  data_product["image"]
-                """
-                if ';base64,' in data_product["image"]:
-                    format, imgstr = data_product["image"].split(';base64,')
-                    ext = format.split('/')[-1]
-                    product.image = ContentFile(base64.b64decode(imgstr), name='temp.' + ext)
-                """
-                product.coin = data_product["coin"]
-                product.price = data_product["price"]
+                product.name = data["name"]
+                product.description = data["description"]
+                product.image =  data["image"]
+                product.coin = data["coin"]
+                product.price = data["price"]
                 product.category = category
                 product.brand = brand
-                product.quantity = data_product["quantity"]
+                product.quantity = data["quantity"]
                 product.save()
 
+                new_product = Product.objects.latest('created')
+                serializer = ProductSerializer(new_product, many=False)
+                return Response(serializer.data,status=status.HTTP_201_CREATED)
+            else:
+                return Response("error al validar serializador")
+
+        else:
+
+            return Response("Debe suministrar informacion de producto", status=status.HTTP_400_BAD_REQUEST)
+
+        """ 
                 #registro de detalle de compra
                 if "features" in data:
                     
@@ -173,17 +172,88 @@ class ProductCreateView(APIView):
                 return Response(serializer_product.errors, status=status.HTTP_400_BAD_REQUEST)
         
         return Response("Debe suministrar informacion de producto", status=status.HTTP_400_BAD_REQUEST)
-    
+    """
+
+class FeaturesCreateView(APIView):
+
+    def post(self,request,format=None):
+        """Guardar un Caracteristicas"""
+        
+        data = request.data
+        features_array = []
+        print(data)
+        #registro de detalle de compra
+        if  data:   
+            try:    
+                Product.objects.get(id=data['product'])
+            except Product.DoesNotExist:
+                return Response("Producto no existe", status=status.HTTP_400_BAD_REQUEST) 
+            
+            product = Product.objects.get(id=data['product']) 
+   
+            for item in data["features"]:
+                try:    
+                    Characteristic.objects.get(id=item["characteristic"]["id"])
+                except Characteristic.DoesNotExist:
+                    return Response("La Caracteristica no existe", status=status.HTTP_400_BAD_REQUEST)
+
+                characteristic = Characteristic.objects.get(id=item["characteristic"]["id"])
+   
+                feature = ProductDetail()
+                feature.product = product
+                feature.characteristic = characteristic
+                feature.description = item["description"]
+                feature.save()
+
+                new_feature = ProductDetail.objects.latest('created')
+                serializer = ProductDetailSerializer(new_feature, many=False)
+                features_array.append(serializer.data)
+                
+            return Response(features_array)
+        else: 
+            return Response("Debe suministrar informacion de caracteristicas", status=status.HTTP_400_BAD_REQUEST)
+
+
+class GalleryCreateView(APIView):
+
+    def post(self,request,format=None):
+        """Guardar un Galeria"""
+        data = request.data
+        print(data["product"])
+        if  data: 
+            tam = len(data)
+            i=0
+            gallery_array = []
+          
+            try:    
+                Product.objects.get(id = data["product"])
+            except Product.DoesNotExist:
+                return Response("Producto no existe", status=status.HTTP_400_BAD_REQUEST) 
+            
+            product = Product.objects.get(id = data["product"]) 
+   
+            while i < tam-1:
+   
+                image = ProductGallery()
+                image.product = product
+                image.image = data["image["+str(i)+"]"]
+                image.save()
+
+                new_image = ProductGallery.objects.latest('created')
+                serializer = ProductGalleryMixinSerializer(new_image, many=False)
+                gallery_array.append(serializer.data)
+                i+=1
+                
+            return Response(gallery_array)
+        else: 
+            return Response("Debe suministrar Fotos", status=status.HTTP_400_BAD_REQUEST)
+        
 class ProductSearchView(APIView):
     
     def get(self, request, pk, format=None):
 
-        """Buscar un producto"""
-        try:
-            Product.objects.get(id=pk)
-        except Product.DoesNotExist:
-            return Response("EL Id de producto no existe")
-        
+        """Buscar un productodd"""
+       
         product = Product.objects.get(id=pk)
         serializer = ProductListSearchSerializer(product, many=False)
         return Response(serializer.data)
