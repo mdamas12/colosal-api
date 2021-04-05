@@ -1,8 +1,14 @@
+from rest_framework.authentication import SessionAuthentication, BasicAuthentication
+from rest_framework.permissions import IsAuthenticated
+
 from rest_framework.generics import ListAPIView
 from rest_framework.views import APIView
 from rest_framework.exceptions import NotFound as NotFoundError
 from rest_framework.pagination import PageNumberPagination
 from .models import *
+from  users.models import *
+from  users.serializers import UserSerializer
+
 from .serializers import *
 
 #from .repositories import *
@@ -25,6 +31,7 @@ class ShoppingcartViewSet(
     serializer_class = ShoppingcartSerializer
 
 class CustomPaginator(PageNumberPagination):
+   
     page_size = 10 # Number of objects to return in one page
 
     def generate_response(self, query_set, serializer_obj, request):
@@ -39,16 +46,50 @@ class CustomPaginator(PageNumberPagination):
 
 class ShoppingcartCustomerView(APIView):
     pagination_class = PageNumberPagination
+    authentication_classes = [SessionAuthentication, BasicAuthentication]
+    permission_classes = [IsAuthenticated]
 
-    def get(self, request, pk, format=None):
+    def get(self, request, format=None):
         """Carrito de Compra Por cliente"""
-
-        shoppingcart = Shoppingcart.objects.filter(customer=pk)
+        #print(request.user)
+        user = UserSerializer(User.objects.get(username = request.user), many = False)
+        return Response(user.data)
+        #user = User.objects.all()
+        #serializers = UserSerializer(user, many = True)
+        #print(user.data)
+        #return Response(user.data["id"])
+        shoppingcart = Shoppingcart.objects.filter(customer = user.data["id"])
         paginator = CustomPaginator()
         serializer = paginator.generate_response(shoppingcart, ShoppingcartDetailSerializer, request)
         #serializer = ShoppingcartDetailSerializer(shoppingcart, many=True)
         return serializer
 
+    def post(self,request,format=None):
+
+        """Guardar un producto en carrito de compra"""
+        
+        data = request.data
+        #print(data)
+        
+        user = UserSerializer(User.objects.get(username = request.user), many = False)
+        try:
+            Product.objects.get(id=data["product"])
+        except Product.DoesNotExist:
+            return Response("producto no existe", status=status.HTTP_400_BAD_REQUEST)
+        product = Product.objects.get(id=data["product"])
+        
+        
+        shopping = Shoppingcart()
+        shopping.customer = user.data["id"]
+        shopping.product = data["product"]
+        shopping.quantity =  data["quantity"]
+        shopping.amount = product.data["price"] * data["quantity"]
+        shopping.save()
+        
+        new_shopping = Shoppingcart.objects.latest('created')
+        serializer = ShcCustomerSerializer(new_shopping, many=False)
+        return Response(serializer.data,status=status.HTTP_201_CREATED)
+       
 
 class ShoppingcartListall(ListAPIView):
     

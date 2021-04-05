@@ -18,6 +18,7 @@ class Shoppingcart(TimeStampedModel):
     amount = models.DecimalField(max_digits=19, decimal_places=2)
     status = models.CharField(max_length=15)
     
+  
 
     class Meta:
         verbose_name = "Carrito de Compra"

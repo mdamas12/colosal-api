@@ -41,7 +41,7 @@ class CategoryCreateView(APIView):
         """Crear Categoria"""
         
         data = request.data
-        print(request.data)
+        #print(request.data)
         #return Response(data)
         serializer_categories = CategorySerializer(data=request.data)
    
@@ -71,3 +71,10 @@ class listAllCategories(APIView):
         categories = Category.objects.all()
         serializer = CategoriesDetailSerializer(categories, many=True)
         return Response(serializer.data)
+
+class pruebaLogin(APIView):
+      
+    def post(self,request,format=None):
+
+        print(request.data)
+        return Response(request.data)

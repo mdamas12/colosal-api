@@ -8,7 +8,7 @@ base_router = routers.SimpleRouter()
 base_router.register(r'', ShoppingcartViewSet)
 
 urlpatterns = [
-    path('customer/<int:pk>/', ShoppingcartCustomerView.as_view()),
+    url(r'customer/', ShoppingcartCustomerView.as_view()),
     url(r'list', ShoppingcartListall.as_view()),
     url(r'', include(base_router.urls)),
 ]
