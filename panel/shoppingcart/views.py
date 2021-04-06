@@ -1,4 +1,4 @@
-from rest_framework.authentication import SessionAuthentication, BasicAuthentication
+from rest_framework.authentication import SessionAuthentication, BasicAuthentication, TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
 
 from rest_framework.generics import ListAPIView
@@ -46,22 +46,13 @@ class CustomPaginator(PageNumberPagination):
 
 class ShoppingcartCustomerView(APIView):
     pagination_class = PageNumberPagination
-    authentication_classes = [SessionAuthentication, BasicAuthentication]
+    authentication_classes = [TokenAuthentication, SessionAuthentication, BasicAuthentication]
     permission_classes = [IsAuthenticated]
 
     def get(self, request, format=None):
-        """Carrito de Compra Por cliente"""
-        #print(request.user)
-        user = UserSerializer(User.objects.get(username = request.user), many = False)
-        return Response(user.data)
-        #user = User.objects.all()
-        #serializers = UserSerializer(user, many = True)
-        #print(user.data)
-        #return Response(user.data["id"])
-        shoppingcart = Shoppingcart.objects.filter(customer = user.data["id"])
+        shoppingcart = Shoppingcart.objects.filter(customer = request.user)
         paginator = CustomPaginator()
         serializer = paginator.generate_response(shoppingcart, ShoppingcartDetailSerializer, request)
-        #serializer = ShoppingcartDetailSerializer(shoppingcart, many=True)
         return serializer
 
     def post(self,request,format=None):
