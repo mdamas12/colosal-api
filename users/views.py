@@ -1,5 +1,7 @@
 from rest_framework import viewsets
-from rest_framework.generics import ListAPIView
+from rest_framework.authentication import TokenAuthentication, SessionAuthentication, BasicAuthentication
+from rest_framework.generics import ListAPIView, RetrieveAPIView
+from rest_framework.permissions import IsAuthenticated
 
 from users.repository import UserRepository
 from users.serializers import UserSerializer
@@ -26,3 +28,12 @@ class UserFindView(ListAPIView):
     @property
     def repository(self):
         return UserRepository()
+
+
+class UserRetrieveView(RetrieveAPIView):
+    authentication_classes = [TokenAuthentication, SessionAuthentication, BasicAuthentication]
+    permission_classes = [IsAuthenticated]
+    serializer_class = UserSerializer
+
+    def get_object(self):
+        return self.request.user
