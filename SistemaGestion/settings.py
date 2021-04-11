@@ -61,6 +61,7 @@ INSTALLED_APPS = [
     'panel.payments',
     'panel.shoppingcart',
     'panel.sales',
+    'profileUser',
     'web',
     'web.home',
 ]
