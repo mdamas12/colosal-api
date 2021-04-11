@@ -23,7 +23,7 @@ from rest_framework import routers
 from rest_framework_swagger.views import get_swagger_view
 
 
-from users.views import UserViewSet
+from users.views import UserViewSet, UserFindView
 
 schema_view = get_swagger_view(title='API Sistema-bodegon')
 
@@ -38,6 +38,7 @@ urlpatterns = [
     url(r'^docs/', schema_view),
     url(r'^panel/', include('panel.urls')),
     url(r'^web/', include('web.urls')),
+    url(r'^user/find/', UserFindView.as_view()),
     path('admin/', admin.site.urls),
 ]
 

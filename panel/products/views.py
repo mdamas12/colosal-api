@@ -339,14 +339,10 @@ class ProductSearchView(APIView):
 
 
         """Eliminar un producto"""
-        product= Product.objects.get(id=pk)
-        product_detail= ProductDetail.objects.filter(product=product)
-        serializer = ProductDetailMixinSerializer(product_detail, many=True)
-    
-        for item_detail in serializer.data:
-            detail = ProductDetail.objects.get(id=item_detail["id"])
-            detail.delete()
-        
+        product = Product.objects.get(id=pk)
+        ProductDetail.objects.filter(product=product).delete()
+        ProductGallery.objects.filter(product=product).delete()
+
         product.delete()
         
         return Response("se ha eliminado El producto",status=status.HTTP_204_NO_CONTENT)

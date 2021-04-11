@@ -51,4 +51,4 @@ class ProductGallery(TimeStampedModel):
         verbose_name = "Galeria de producto"
         verbose_name_plural = "Galerias de productos"
 
-    def __str__(self): return self.name
+    #def __str__(self): return self.name
