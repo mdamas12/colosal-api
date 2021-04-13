@@ -23,6 +23,7 @@ class MethodSerializer(serializers.ModelSerializer):
         fields = ('__all__') 
 
 
+
 class MethodDetailSerializer(serializers.ModelSerializer):
 
     class Meta:
@@ -43,5 +44,17 @@ class listpaymentsSerializer(serializers.ModelSerializer):
             'phone',
             'currency',
             'methods',
+
+        )
+class MethodWebSerializer(serializers.ModelSerializer):
+    #purchase = PurchaseMixinSerializer()
+    #purchase = serializers.IntegerField()
+    bank = listpaymentsSerializer()
+
+    class Meta:
+        model = Method
+        fields = (
+            'id',
+            'bank',
 
         )

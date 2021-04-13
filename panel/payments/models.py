@@ -13,7 +13,7 @@ class Bank(TimeStampedModel):
     account_owner = models.CharField(max_length=25, null=True, blank=True)
     account_number = models.CharField( max_length=25, null=True, blank=True)
     owner_id = models.CharField(max_length=15, null=True, blank=True)
-    email = models.EmailField(unique=True, max_length=254)
+    email = models.EmailField(max_length=254)
     phone = models.CharField(max_length=30, null=True, blank=True)
     currency = models.CharField(max_length=10, null=True,blank=True)
   
@@ -24,10 +24,10 @@ class Bank(TimeStampedModel):
     def __str__(self): return self.name
 
 class Method(TimeStampedModel):
-    PaymentType = Choices('ZELLE', 'TRANSFERENCIA', 'PAGO MOVIL')
+    PaymentType = Choices('ZELLE', 'TRANSFERENCIA $', 'TRANSFERENCIA BS', 'PAGO MOVIL', 'EFECTIVO')
 
     bank = models.ForeignKey(Bank, related_name='methods', on_delete=models.PROTECT)
-    payment_type = models.CharField(max_length=20, choices=PaymentType, default="TRANSFERENCIA")
+    payment_type = models.CharField(max_length=20, choices=PaymentType, default="TRANSFERENCIA $")
   
     class Meta:
         verbose_name = "Metodo de Pago"

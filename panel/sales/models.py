@@ -19,10 +19,11 @@ class Sale(TimeStampedModel):
     description = models.TextField(null=True,blank=True)
     customer = models.ForeignKey(User, on_delete=models.DO_NOTHING)
     payment_type = models.CharField(max_length=20, choices=PaymentType, default="TRANSFERENCIA BS")
-    bank = models.ForeignKey(Bank, on_delete=models.PROTECT)
+    bank = models.ForeignKey(Bank, on_delete=models.DO_NOTHING, null=True)
     coin = models.CharField(max_length=20,choices=COINS,default="USD")
     amount = models.DecimalField(max_digits=19, decimal_places=2, default=0)
     status = models.CharField(max_length=20, null=True, blank=True)
+    reference = models.CharField(max_length=40, null=True, blank=True )
 
     class Meta:
         verbose_name = "Venta"
@@ -34,8 +35,9 @@ class SaleDetail(TimeStampedModel):
 
     #STATUS = Choices('Imcomplete', 'Complete' )
 
-    sale = models.ForeignKey(Sale, related_name='detail_sale', on_delete=models.PROTECT)
-    product = models.ForeignKey(Product, related_name='SaleProduct', on_delete=models.PROTECT)
+    sale = models.ForeignKey(Sale, related_name='detail_sale',  on_delete=models.DO_NOTHING)
+    product = models.ForeignKey(Product, related_name='SaleProduct', on_delete=models.DO_NOTHING, null=True)
+    promotion = models.ForeignKey(Promotion, related_name='SalePromotion',  on_delete=models.DO_NOTHING, null=True)
     sale_price = models.DecimalField(max_digits=19, decimal_places=2, default=0)
     quantity_sold = models.IntegerField(default=0)
     amount = models.DecimalField(max_digits=19, decimal_places=2, default=0)

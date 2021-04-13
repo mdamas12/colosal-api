@@ -80,4 +80,11 @@ class PaymentCreateView(APIView):
         return Response("Debes enviar informacion del banco y metodos de pago", status=status.HTTP_400_BAD_REQUEST)
     
      
+class PaymentBanksView(APIView):
+    
+    def get(self, request, type, format=None):
+        """listar por tipo de pago """
 
+        paymentbank = Method.objects.filter(payment_type = type)
+        serializer = MethodWebSerializer(paymentbank, many=True)
+        return Response(serializer.data)

@@ -13,8 +13,9 @@ base_router = routers.SimpleRouter()
 
 
 urlpatterns = [
-
+    path(r'banks/<str:type>/', PaymentBanksView.as_view()),
     url(r'', PaymentCreateView.as_view()),
+    
     #url(r'^detail/$', views.PurshaseDetailCreate.as_view()),
     
 ]

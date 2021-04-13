@@ -50,7 +50,9 @@ class ShoppingcartCustomerView(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request, format=None):
-        shoppingcart = Shoppingcart.objects.filter(customer = request.user)
+        
+        user = UserSerializer(User.objects.get(email = request.user), many = False)
+        shoppingcart = Shoppingcart.objects.filter(customer = user.data["id"])
         paginator = CustomPaginator()
         serializer = paginator.generate_response(shoppingcart, ShoppingcartDetailSerializer, request)
         return serializer
@@ -60,27 +62,85 @@ class ShoppingcartCustomerView(APIView):
         """Guardar un producto en carrito de compra"""
         
         data = request.data
-        #print(data)
-        
-        user = UserSerializer(User.objects.get(username = request.user), many = False)
+        user = UserSerializer(User.objects.get(email = request.user), many = False)        
         try:
             Product.objects.get(id=data["product"])
         except Product.DoesNotExist:
             return Response("producto no existe", status=status.HTTP_400_BAD_REQUEST)
         product = Product.objects.get(id=data["product"])
         
+        try: 
+            Shoppingcart.objects.get(product=data["product"],customer = user.data["id"])
+        except Shoppingcart.DoesNotExist:
+            
+            cart = {
+            "customer" : user.data["id"],
+            "product" : product.id,
+            "quantity" :  data["quantity"],
+            "amount" : product.price * data["quantity"],
+            "status" : "in"
+            }
+
+            serializer_shopp = ShoppingcartSerializer(data=cart)
+    
+            if serializer_shopp.is_valid():
+                serializer_shopp.save()
+                new_shopping = Shoppingcart.objects.latest('created')
+                serializer = ShoppingcartSerializer(new_shopping, many=False)
+                return Response(serializer.data,status=status.HTTP_201_CREATED)
+            else:
+                return Response(serializer.errors, status=400)
         
-        shopping = Shoppingcart()
-        shopping.customer = user.data["id"]
-        shopping.product = data["product"]
-        shopping.quantity =  data["quantity"]
-        shopping.amount = product.data["price"] * data["quantity"]
-        shopping.save()
-        
-        new_shopping = Shoppingcart.objects.latest('created')
-        serializer = ShcCustomerSerializer(new_shopping, many=False)
-        return Response(serializer.data,status=status.HTTP_201_CREATED)
+        cart = Shoppingcart.objects.get(product=data["product"],customer = user.data["id"])
+        cart.quantity = data["quantity"]
+        cart.amount = product.price * data["quantity"]
+        cart.save()
+        return Response("Actualizado",status=status.HTTP_201_CREATED)
+  
+
+class CustomerSearchView(APIView):
+    pagination_class = PageNumberPagination
+    authentication_classes = [TokenAuthentication, SessionAuthentication, BasicAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request, format=None):
+
        
+        data = request.data
+        print(data["product"])
+        user = UserSerializer(User.objects.get(email = request.user), many = False) 
+        try: 
+            Shoppingcart.objects.get(product=data["product"],customer = user.data["id"])
+        except Shoppingcart.DoesNotExist:
+            return Response("producto no existe en carrito de compra", status=status.HTTP_400_BAD_REQUEST)
+
+        cart = Shoppingcart.objects.get(product=data["product"],customer = user.data["id"])
+        return Response(cart.quantity,status=status.HTTP_201_CREATED)
+        
+
+class DeleteShoppingcartView(APIView):
+    pagination_class = PageNumberPagination
+    authentication_classes = [TokenAuthentication, SessionAuthentication, BasicAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    def delete(self, request, pk, format=None):
+        
+            
+        try:
+            Shoppingcart.objects.get(id=pk)
+        except Shoppingcart.DoesNotExist:
+            return Response("El item  no existe", status=status.HTTP_400_BAD_REQUEST)
+            
+        item = Shoppingcart.objects.get(id=pk)
+        item.delete()
+        return Response("Item ha sido eliminado")
+        
+
+
+
+    
+
+
 
 class ShoppingcartListall(ListAPIView):
     

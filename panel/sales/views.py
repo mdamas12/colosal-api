@@ -1,3 +1,5 @@
+from rest_framework.authentication import SessionAuthentication, BasicAuthentication, TokenAuthentication
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.pagination import PageNumberPagination
@@ -7,9 +9,12 @@ from rest_framework.decorators import api_view
 from django.db.models import Q
 from django.conf import settings
 
+from  users.serializers import UserSerializer
+
 from panel.payments.models import *
 from panel.products.models import *
 from panel.customers.models import *
+from panel.shoppingcart.models import *
 from .models import *
 
 from .serializers import *
@@ -33,11 +38,15 @@ class CustomPaginator(PageNumberPagination):
         return self.get_paginated_response(serialized_page.data)
 
 class SaleCreateView(APIView):
+    pagination_class = PageNumberPagination
+    authentication_classes = [TokenAuthentication, SessionAuthentication, BasicAuthentication]
+    permission_classes = [IsAuthenticated]
      
     
     def get(self, request, format=None):
         """Listar Todas las ventas"""
-        
+        user = UserSerializer(User.objects.get(email = request.user), many = False)   
+        sales = Sale.objects.filter(customer = user.data["id"])
         sales = Sale.objects.all()
         paginator = CustomPaginator()
         serializer = paginator.generate_response(sales, SaleViewchSerializer, request)
@@ -48,93 +57,71 @@ class SaleCreateView(APIView):
         """Guardar un Producto"""
         
         data = request.data
-        sale_detail_array = []
-        parcial_amount = 0
-        #if "purchase" in data and "products" in data:
-        if "sale" in data:
-            
-            data_sale = data["sale"]
-            
-            try:
-                 Customer.objects.get(id=data_sale["customer"])
-            except Customer.DoesNotExist:
-                return Response("El cliente no existe", status=status.HTTP_400_BAD_REQUEST)
-            
-            customer = Customer.objects.get(id=data_sale["customer"])
+        user = UserSerializer(User.objects.get(email = request.user), many = False) 
+        bank = data["bank"]
+        if len(bank) == 0:
+            sale = {
+                "customer" : user.data["id"],
+                "payment_type" : data["payment_type"],
+                "amount" : data["amount"],
+                "reference" : data["reference"],
+                "status" : "POR VALIDAR"
+            }
+        else:
+            sale = {
+            "customer" : user.data["id"],
+            "bank" : bank["bank"]["id"],
+            "payment_type" : data["payment_type"],
+            "amount" : data["amount"],
+            "reference" : data["reference"],
+            "status" : "POR VALIDAR"
+           }
 
-            try:
-                 Bank.objects.get(id=data_sale["bank"])
-            except Bank.DoesNotExist:
-                return Response("los datos de pago no existen", status=status.HTTP_400_BAD_REQUEST)
-            
-            bank = Bank.objects.get(id=data_sale["bank"])
 
-            serializer_sale = SaleSerializer(data=data_sale)
-   
-            if serializer_sale.is_valid():
-
-                sale = Sale()
-                sale.description = data_sale["description"]
-                sale.customer = customer
-                sale.payment_type = data_sale["payment_type"]
-                sale.bank = bank
-                sale.coin = data_sale["coin"]
-                sale.status = "POR VALIDAR"
-                sale.save()
-
-     
-
-                #registro de detalle de venta 
+       
+        sale_serializer = SaleSerializer(data=sale)
     
-                if "sale_detail" in data:
-                    
-                    data_sale_detail = data["sale_detail"]                   
-                    #data_saledetail = []
-                    for item_detail in data_sale_detail:
-                        
-                        try:    
-                             Shoppingcart.objects.get(id=item_detail["shoppingcart"])
-                        except Shoppingcart.DoesNotExist:
-                            return Response("el producto no esta en carrito de compra", status=status.HTTP_400_BAD_REQUEST)
-                        
-                        shoppingcart = Shoppingcart.objects.get(id=item_detail["shoppingcart"])     
-                        product = Product.objects.get(id = shoppingcart.product.id)
+        if sale_serializer.is_valid():
+            
+            sale_serializer.save()
+            new_sale = SaleSerializer(Sale.objects.latest('created'),many = False).data
+        
+            if "products" in data:
                 
-                            
-                        sale_detail = SaleDetail()
-                        sale_detail.sale = sale
-                        sale_detail.product = product
-                        sale_detail.sale_price = product.price
-                        sale_detail.quantity_sold = shoppingcart.quantity
-                        sale_detail.amount = shoppingcart.quantity * product.price
-                        sale_detail.status = "POR ENTREGAR"
-                        sale_detail.save()
-                        
-                        sale_detail_array.append(SaleDetailViewSerializer(sale_detail).data) 
-                        #sale_detail_array.append(sale_detail)                           
-                        parcial_amount = parcial_amount +  (shoppingcart.quantity * product.price)
-                        product.quantity = product.quantity - shoppingcart.quantity
+                data_products = data["products"]
+
+                for item in data_products:
+                    SaleDetail = {
+                        "sale" : new_sale["id"],
+                        "product" : item["product"]["id"],
+                        "sale_price" : item["product"]["price"],
+                        "quantity_sold" : item["quantity"],
+                        "amount" : item["amount"],
+                        "status" : "POR ENTREGAR",
+                    }
+                    SaleDetail_serializer = SaleDetailSerializer(data=SaleDetail)
+                    if SaleDetail_serializer.is_valid():
+                        SaleDetail_serializer.save()
+                        #SaleDetail = SaleSerializer(Sale.objects.latest('created'),many = False).data
+
+                        #Actualizar Stock en productos:
+                        product = Product.objects.get(id = item["product"]["id"])
+                        product.quantity = product.quantity - item["quantity"]
                         product.save()
 
-                        shoppingcart.status = "PROCESADO"
-                        shoppingcart.save()
-                        #shoppingcart.delete()
- 
-                    sale.amount = parcial_amount
-                    sale.save()
-                    
-                data_end = {
-                    "Sale": SaleViewchSerializer(sale).data,
-                    "Detail": sale_detail_array
-                }
-
-                return Response(data_end)
-            else:
+                        #limpiar carrito de compra (shoppingcart): dd
+                        shoppingcart = Shoppingcart.objects.get(product=item["product"]["id"],customer = user.data["id"])
+                        shoppingcart.delete()
+                    else:
+                        return Response("error when registering purchase detail", status=status.HTTP_400_BAD_REQUEST)
                 
-                return Response(serializer_sale.errors, status=status.HTTP_400_BAD_REQUEST)
-        
-        return Response("Debe suministrar informacion", status=status.HTTP_400_BAD_REQUEST)
+                return Response("register successful",status=status.HTTP_201_CREATED)
+            else:
+                return Response("products list doesn't exist", status=status.HTTP_400_BAD_REQUEST)
 
+        else:
+            return Response("error when registering purchase", status=status.HTTP_400_BAD_REQUEST)
+    
 class SalesDetailView(APIView):
       
     def get(self, request, pk, format=None):
@@ -310,3 +297,51 @@ class SaleListStatusView(APIView):
             return Response(serializer.data)
         else:
             return Response("el Status de venta no existe", status=status.HTTP_400_BAD_REQUEST)
+
+class SaleListStatusWeb(APIView):
+    """ Listar Compras de un cliente - servicio para la web """  
+
+    pagination_class = PageNumberPagination
+    authentication_classes = [TokenAuthentication, SessionAuthentication, BasicAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, pk, format=None):
+          
+        """Listar Compras por status"""
+        user = UserSerializer(User.objects.get(email = request.user), many = False)   
+       
+        if pk==1:            
+            sale = Sale.objects.filter(status="POR VALIDAR", customer = user.data["id"])
+            serializer = SaleViewchSerializer(sale, many=True)
+            return Response(serializer.data)
+        elif pk==2:
+            sale = Sale.objects.filter(status="POR ENTREGAR",customer = user.data["id"])
+            serializer = SaleViewchSerializer(sale, many=True)
+            return Response(serializer.data)
+        elif pk==3:
+            sale = Sale.objects.filter(status="PROCESADA", customer = user.data["id"])
+            serializer = SaleViewchSerializer(sale, many=True)
+            return Response(serializer.data)
+        else:
+            return Response("el Status de venta no existe", status=status.HTTP_400_BAD_REQUEST)
+
+class PurchaseUdateReference(APIView):
+    """ Actualizar Referencia - servicio para la web """  
+
+    pagination_class = PageNumberPagination
+    authentication_classes = [TokenAuthentication, SessionAuthentication, BasicAuthentication]
+    permission_classes = [IsAuthenticated]
+    
+    def put(self, request, pk, format=None):
+        data = request.data
+        print(data["reference"])
+        user = UserSerializer(User.objects.get(email = request.user), many = False)
+        sale = Sale.objects.get(id=pk)
+        sale.reference = data["reference"]
+        sale.save()
+        return Response("Update successful",status=status.HTTP_201_CREATED)
+
+
+    
+
+
