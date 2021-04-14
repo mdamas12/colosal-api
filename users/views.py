@@ -3,8 +3,10 @@ from rest_framework.authentication import TokenAuthentication, SessionAuthentica
 from rest_framework.generics import ListAPIView, RetrieveAPIView, UpdateAPIView, CreateAPIView
 from rest_framework.permissions import IsAuthenticated
 from users.repository import UserRepository
-from users.serializers import UserSerializer
+from users.serializers import UserSerializer, RegisterSerializer
 from django.contrib.auth.models import User
+
+from users.usecases.registerUsecase import UserRegisterUsecase
 from users.usecases.usescases import *
 
 
@@ -56,3 +58,19 @@ class UserViewSet(mixins.RetrieveModelMixin,
                   viewsets.GenericViewSet):
     queryset = User.objects.all()
     serializer_class = UserSerializer
+
+
+class UserRegisterView(CreateAPIView):
+
+    serializer_class = RegisterSerializer
+
+    # queryset = Invitation.objects.all()
+
+    def perform_create(self, serializer):
+        data = serializer.validated_data
+        usecase = UserRegisterUsecase(self.repository, data["username"], data["email"], data["password"], data["is_superuser"])
+        return usecase.execute()
+
+    @property
+    def repository(self):
+        return UserRepository()
