@@ -59,6 +59,15 @@ class SaleCreateView(APIView):
         data = request.data
         user = UserSerializer(User.objects.get(email = request.user), many = False) 
         bank = data["bank"]
+
+        #validar stock de cada producto a comprar:
+
+        data_products = data["products"]
+        for item in data_products:
+             product = Product.objects.get(id = item["product"]["id"])
+             if item["quantity"] > product.quantity :
+                 return Response("La Cantidad solicitada ya no se encuenta en disponible para el producto:  "+product.name, status=status.HTTP_200_OK)
+        
         if len(bank) == 0:
             sale = {
                 "customer" : user.data["id"],
@@ -76,9 +85,7 @@ class SaleCreateView(APIView):
             "reference" : data["reference"],
             "status" : "POR VALIDAR"
            }
-
-
-       
+  
         sale_serializer = SaleSerializer(data=sale)
     
         if sale_serializer.is_valid():

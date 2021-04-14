@@ -68,7 +68,10 @@ class ShoppingcartCustomerView(APIView):
         except Product.DoesNotExist:
             return Response("producto no existe", status=status.HTTP_400_BAD_REQUEST)
         product = Product.objects.get(id=data["product"])
-        
+
+        if data["quantity"] > product.quantity:
+            return Response("La Cantidad solicitada ya no se encuenta en stock para:  "+product.name, status=status.HTTP_200_OK)
+
         try: 
             Shoppingcart.objects.get(product=data["product"],customer = user.data["id"])
         except Shoppingcart.DoesNotExist:
@@ -87,7 +90,7 @@ class ShoppingcartCustomerView(APIView):
                 serializer_shopp.save()
                 new_shopping = Shoppingcart.objects.latest('created')
                 serializer = ShoppingcartSerializer(new_shopping, many=False)
-                return Response(serializer.data,status=status.HTTP_201_CREATED)
+                return Response("Producto Agregado a carrito de compra",status=status.HTTP_201_CREATED)
             else:
                 return Response(serializer.errors, status=400)
         
@@ -95,7 +98,7 @@ class ShoppingcartCustomerView(APIView):
         cart.quantity = data["quantity"]
         cart.amount = product.price * data["quantity"]
         cart.save()
-        return Response("Actualizado",status=status.HTTP_201_CREATED)
+        return Response("Producto Actualizado en carrito de compra",status=status.HTTP_201_CREATED)
   
 
 class CustomerSearchView(APIView):
@@ -118,7 +121,7 @@ class CustomerSearchView(APIView):
         return Response(cart.quantity,status=status.HTTP_201_CREATED)
         
 
-class DeleteShoppingcartView(APIView):
+class ChangeShoppingcartView(APIView):
     pagination_class = PageNumberPagination
     authentication_classes = [TokenAuthentication, SessionAuthentication, BasicAuthentication]
     permission_classes = [IsAuthenticated]
@@ -134,13 +137,23 @@ class DeleteShoppingcartView(APIView):
         item = Shoppingcart.objects.get(id=pk)
         item.delete()
         return Response("Item ha sido eliminado")
-        
 
-
-
+    def put(self, request, pk, format=None):
+        data = request.data
     
-
-
+        product = Product.objects.get(id=data["product"])
+        product_inshopp = Shoppingcart.objects.get(id=pk)
+        
+        
+        if data["quantity"] > product.quantity:
+            return Response("La Cantidad solicitada ya no se encuenta en stock para:  "+product.name, status=status.HTTP_200_OK)
+        else:
+            product_inshopp.quantity = data["quantity"]
+            product_inshopp.amount = product.price * data["quantity"]
+            product_inshopp.save()
+            return Response("producto Actualizado con exito", status=status.HTTP_202_ACCEPTED)
+        
+        
 
 class ShoppingcartListall(ListAPIView):
     
