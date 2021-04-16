@@ -1,6 +1,7 @@
 from rest_framework import serializers
 
 from panel.products.serializers import ProductListSearchSerializer
+from panel.promotions.serializers import PromotionFullSerializer
 from  users.serializers import UserSerializer
 
 from .models import *
@@ -26,12 +27,14 @@ class ShoppingcartEditSerializer(serializers.ModelSerializer):
 class ShoppingcartDetailSerializer(serializers.ModelSerializer):
     #customer = UserSerializer(many=False)
     product = ProductListSearchSerializer(many=False)
+    promotion = PromotionFullSerializer(many=False)
     class Meta:
         model = Shoppingcart
         fields = (
             'id',
             'customer',
             'product',
+            'promotion',
             'quantity',
             'amount',
             'status',

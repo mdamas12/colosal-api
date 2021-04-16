@@ -9,7 +9,10 @@ base_router.register(r'', ShoppingcartViewSet)
 
 urlpatterns = [
     url(r'customer/', ShoppingcartCustomerView.as_view()),
+    url(r'add-product/', AddProductShoppingcartView.as_view()),
+    url(r'add-promotion/', AddPromotionShoppingcartView.as_view()),
     url(r'verify-product/', CustomerSearchView.as_view()), 
+    url(r'verify-promotion/', SearchPromotionShoppView.as_view()),
     path(r'change/<int:pk>/', ChangeShoppingcartView.as_view()), 
     url(r'list', ShoppingcartListall.as_view()),
     url(r'', include(base_router.urls)),

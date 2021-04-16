@@ -1,5 +1,5 @@
 from rest_framework import serializers
-
+from  SistemaGestion.settings import *
 from panel.brands.serializers import BrandSerializer, BrandDetailSerializer
 from panel.categories.serializers import CategorySerializer, CategoriesDetailSerializer
 from panel.characteristics.serializers import CharacteristicViewSerializer
@@ -79,5 +79,15 @@ class ProductListSearchSerializer(serializers.ModelSerializer):
             'picture'
             
         )
+    def to_representation(self,instance): 
+
+        representation = super(ProductListSearchSerializer,self).to_representation(instance)
+        if representation['image'] is not None:
+            domain_name = SERVER_URL
+            if instance.image:
+                full_path = domain_name + instance.image.url
+                representation['image'] = full_path
+        return representation
+    
 
     

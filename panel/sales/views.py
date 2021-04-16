@@ -54,7 +54,7 @@ class SaleCreateView(APIView):
         
 
     def post(self,request,format=None):
-        """Guardar un Producto"""
+        """Guardar Una Compra"""
         
         data = request.data
         user = UserSerializer(User.objects.get(email = request.user), many = False) 
@@ -64,10 +64,23 @@ class SaleCreateView(APIView):
 
         data_products = data["products"]
         for item in data_products:
-             product = Product.objects.get(id = item["product"]["id"])
-             if item["quantity"] > product.quantity :
-                 return Response("La Cantidad solicitada ya no se encuenta en disponible para el producto:  "+product.name, status=status.HTTP_200_OK)
-        
+            if item["product"]:
+                product = Product.objects.get(id = item["product"]["id"])
+                if item["quantity"] > product.quantity :
+                    return Response("La Cantidad solicitada ya no se encuenta Disponible: "+product.name,  status=status.HTTP_400_BAD_REQUEST)
+            else:
+                promotion = Promotion.objects.get(id = item["promotion"]["id"])
+                if item["quantity"] > promotion.quantity :
+                    return Response("La Cantidad solicitada ya no se encuenta Disponible: "+promotion.name,  status=status.HTTP_400_BAD_REQUEST)
+                
+                promotionDetail = PromotionDetail.objects.filter(promotion = promotion.id)                            
+                for detail_promotion in  promotionDetail: 
+                    
+                    product_det =  Product.objects.get(id = detail_promotion.product.id) 
+                    if detail_promotion.quantity > product_det.quantity:
+                        return Response("La cantidad de "+product_det.name+" es menor a la necesaria para la promocion", status=status.HTTP_400_BAD_REQUEST)
+                    
+
         if len(bank) == 0:
             sale = {
                 "customer" : user.data["id"],
@@ -98,36 +111,64 @@ class SaleCreateView(APIView):
                 data_products = data["products"]
 
                 for item in data_products:
-                    SaleDetail = {
-                        "sale" : new_sale["id"],
-                        "product" : item["product"]["id"],
-                        "sale_price" : item["product"]["price"],
-                        "quantity_sold" : item["quantity"],
-                        "amount" : item["amount"],
-                        "status" : "POR ENTREGAR",
-                    }
+                    if item["product"]:
+                        
+                        SaleDetail = {
+                            "sale" : new_sale["id"],
+                            "product" : item["product"]["id"],
+                            "sale_price" : item["product"]["price"],
+                            "quantity_sold" : item["quantity"],
+                            "amount" : item["amount"],
+                            "status" : "POR ENTREGAR",
+                        }
+                    else:
+                        SaleDetail = {
+                            "sale" : new_sale["id"],
+                            "promotion" : item["promotion"]["id"],
+                            "sale_price" : item["promotion"]["price"],
+                            "quantity_sold" : item["quantity"],
+                            "amount" : item["amount"],
+                            "status" : "POR ENTREGAR",
+                        }
+
                     SaleDetail_serializer = SaleDetailSerializer(data=SaleDetail)
                     if SaleDetail_serializer.is_valid():
                         SaleDetail_serializer.save()
                         #SaleDetail = SaleSerializer(Sale.objects.latest('created'),many = False).data
 
                         #Actualizar Stock en productos:
-                        product = Product.objects.get(id = item["product"]["id"])
-                        product.quantity = product.quantity - item["quantity"]
-                        product.save()
+                        if item["product"]:
+                            product = Product.objects.get(id = item["product"]["id"])
+                            product.quantity = product.quantity - item["quantity"]
+                            product.save()
+                            #limpiar carrito de compra (shoppingcart): dd
+                            shoppingcart = Shoppingcart.objects.get(product=item["product"]["id"],customer = user.data["id"])
+                            shoppingcart.delete()
+                        else:
+                            
+                            promotion = Promotion.objects.get(id = item["promotion"]["id"])
+                            promotion.quantity = promotion.quantity - item["quantity"]
+                            promotion.save()
 
-                        #limpiar carrito de compra (shoppingcart): dd
-                        shoppingcart = Shoppingcart.objects.get(product=item["product"]["id"],customer = user.data["id"])
-                        shoppingcart.delete()
+                            promotionDetail = PromotionDetail.objects.filter(promotion = item["promotion"]["id"])
+                            
+                            for detail_promotion in  promotionDetail:
+                                
+                                product_detail =  Product.objects.get(id = detail_promotion.product.id)   
+                                product_detail.quantity = product_detail.quantity - detail_promotion.quantity
+                                product_detail.save()
+                            #limpiar carrito de compra (shoppingcart): 
+                            shoppingcart = Shoppingcart.objects.get(promotion=item["promotion"]["id"],customer = user.data["id"])
+                            shoppingcart.delete()           
                     else:
-                        return Response("error when registering purchase detail", status=status.HTTP_400_BAD_REQUEST)
+                        return Response("Error al intentar Guardar productos", status=status.HTTP_400_BAD_REQUEST)
                 
-                return Response("register successful",status=status.HTTP_201_CREATED)
+                return Response("Se ha registrado Tu Compra",status=status.HTTP_201_CREATED)
             else:
-                return Response("products list doesn't exist", status=status.HTTP_400_BAD_REQUEST)
+                return Response("No hay Productos seleccionados", status=status.HTTP_400_BAD_REQUEST)
 
         else:
-            return Response("error when registering purchase", status=status.HTTP_400_BAD_REQUEST)
+            return Response("Error al intentar Guardar la Compra", status=status.HTTP_400_BAD_REQUEST)
     
 class SalesDetailView(APIView):
       
