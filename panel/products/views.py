@@ -77,7 +77,7 @@ class ProductCreateView(APIView):
         """Guardar un Producto"""
        
         data = request.data
-        print(data)
+        
         if data:            
             try:
                 Category.objects.get(id=data["category"])

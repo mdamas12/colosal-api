@@ -1,16 +1,19 @@
 from rest_framework import serializers
+from  SistemaGestion.settings import *
 from .models import *
 from panel.products.serializers import ProductListSearchSerializer
 from panel.categories.serializers import CategoriesDetailSerializer
 
 
 class PromotionSerializer(serializers.ModelSerializer):
-    category = serializers.IntegerField(read_only=True)
-    image = serializers.CharField(required=False)
-    status = serializers.CharField(required=False)
+    #category = serializers.IntegerField(read_only=True)
+    #image = serializers.CharField(required=False)
+    #status = serializers.CharField(required=False)
     class Meta:
         model = Promotion
         fields = '__all__'
+
+    
 
 class PromotionDetailSerializer(serializers.ModelSerializer):
     #product = serializers.IntegerField(read_only=True)
@@ -42,3 +45,13 @@ class PromotionFullSerializer(serializers.ModelSerializer):
             'promotion_detail'
             
         )
+    
+    def to_representation(self,instance):  
+        representation = super(PromotionFullSerializer,self).to_representation(instance)
+        if representation['image'] is not None:
+            domain_name = SERVER_URL
+            if instance.image:
+                full_path = domain_name + instance.image.url
+                representation['image'] = full_path
+        return representation
+    

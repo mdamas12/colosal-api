@@ -4,6 +4,7 @@ from rest_framework.views import APIView
 from rest_framework.exceptions import NotFound as NotFoundError
 from rest_framework.pagination import PageNumberPagination
 from .models import Promotion, PromotionDetail
+from rest_framework.decorators import parser_classes
 from  panel.products.models import *
 from .serializers import PromotionSerializer, PromotionDetailSerializer, PromotionDetailViewSerializer, PromotionFullSerializer
 
@@ -38,82 +39,67 @@ class PromottionCreateView(APIView):
         """Guardar una Promocion"""
         
         data = request.data
-        detail_array = []
+        #print(data)
+        """
+        print(data["name"])
+        print(data["description"])
+        print(data["quantity"])
+        print(data["image"])
+        print(data["coin"])
+        print(data["category"])
+        return Response("todo ok")
+        """
+        try:
+            Category.objects.get(id=data["category"])
+        except Category.DoesNotExist:
+            #return Response("La categoria no existe", status=status.HTTP_400_BAD_REQUEST)
+            return Response("categoria no es")   
 
-        #if "purchase" in data and "products" in data:
-        if "promotion" in data:
-            
-            data_promotion = data["promotion"]
-            
-            try:
-                Category.objects.get(id=data_promotion["category"])
-            except Category.DoesNotExist:
-                return Response("La categoria no existe", status=status.HTTP_400_BAD_REQUEST)
-
-            category = Category.objects.get(id=data_promotion["category"])
-            serializer_promotion = PromotionSerializer(data=data_promotion)
+        category = Category.objects.get(id=data["category"])
+        serializer_promotion = PromotionSerializer(data=data)
    
-            if serializer_promotion.is_valid():
+        if serializer_promotion.is_valid():
 
-                promotion = Promotion()
-                promotion.name = data_promotion["name"]
-                promotion.description = data_promotion["description"]
-                """
-                if ';base64,' in data_promotion["image"]:
-                    format, imgstr = data_promotion["image"].split(';base64,')
-                    ext = format.split('/')[-1]
-                    promotion.image = ContentFile(base64.b64decode(imgstr), name='temp.' + ext)
-                """
-                promotion.coin = data_promotion["coin"]
-                promotion.price = data_promotion["price"]
-                promotion.category = category
-                promotion.quantity = data_promotion["quantity"]
-                promotion.save()
+            promotion = Promotion()
+            promotion.name = data["name"]
+            promotion.description = data["description"]
+            promotion.image = data["image"]
+            promotion.coin = data["coin"]
+            promotion.price = data["price"]
+            promotion.category = category
+            promotion.quantity = data["quantity"]
+            promotion.save()
+            
+            new_promotion = Promotion.objects.latest('created')
+            serializer = PromotionSerializer(new_promotion, many=False)
+            return Response(serializer.data,status=status.HTTP_201_CREATED)
+        else:           
+            #return Response(serializer_promotion.errors, status=status.HTTP_400_BAD_REQUEST) 
+            return Response("serializer de promocion no valido")   
 
-                #registro de detalle de compra
-                
-                if "Detail" in data:
-                    
-                    data_promDetail = data["Detail"]                   
-                    
-                    for item_detail in data_promDetail:
-                        #print(item_features)
-                        try:    
-                            Product.objects.get(id=item_detail['product'])
-                        except Product.DoesNotExist:
-                            return Response("El producto no existe", status=status.HTTP_400_BAD_REQUEST)
-                        
-                        product = Product.objects.get(id=item_detail['product'])
-                        serializer_detail = PromotionDetailSerializer(data=item_detail)
-                        if serializer_detail.is_valid():
-                                                    
-                            detail = PromotionDetail()
-                            detail.promotion = promotion
-                            detail.product = product
-                            detail.quantity = item_detail['quantity']
-                            detail.save()
+class PromotionDetailCreateView(APIView): 
 
-                            #detail_array.append(serializer_feature.data)
-                            detail_array.append(PromotionDetailViewSerializer(detail).data)
-                        else:
-                            return Response(serializer_detail.errors, status=status.HTTP_400_BAD_REQUEST)
-                
-                
-                
-                data_end = {
-                    "Promotion": serializer_promotion.data,
-                     "Detail": detail_array,
-                }
+    def post(self,request,format=None):
 
-                return Response(data_end)
+        """Guardar una productos de la promocion""" 
+        data = request.data
+        #print(data)
+
+        for item in data["products_detail"]:
+            product = {
+                "promotion" : data["promotion"],
+                "product" : item["product"],
+                "quantity" : item["quantity"],
+             }
+            Product_serializer = PromotionDetailSerializer(data=product)
+            if Product_serializer.is_valid():
+                Product_serializer.save()              
             else:
-                
-                return Response(serializer_promotion.errors, status=status.HTTP_400_BAD_REQUEST)
-        
-        return Response("Debe suministrar informacion de la promocion", status=status.HTTP_400_BAD_REQUEST)
-
+                return Response("products list doesn't exist", status=status.HTTP_400_BAD_REQUEST)
+        return Response("¡Promocion Creada con exito!",status=status.HTTP_201_CREATED)
 
 class PromotionDetailView(APIView):
+    """ Funcion para Mostrar los detalles de una promocion y sus productos agregados"""
     
     def get(self, request, pk, format=None):
 
@@ -123,143 +109,117 @@ class PromotionDetailView(APIView):
         except Product.DoesNotExist:
             return Response("EL Id de promocion no existe")
         
-        promocion = Promotion.objects.get(id=pk)
-        serializer = PromotionFullSerializer(promocion, many=False)
+        promotion = Promotion.objects.get(id=pk)
+        serializer = PromotionFullSerializer(promotion, many=False)
         return Response(serializer.data)
 
+
+class PromotionModificationView(APIView):
+
     def put(self, request, pk, format=None):
-
         data = request.data
-        detail_array = []
 
-        if "promotion" in data:
-            
-            data_promotion = data["promotion"]
-
-            try:
-                Promotion.objects.get(id=pk)
-            except Promotion.DoesNotExist:
-                return Response("el Id de promocion no existe", status=status.HTTP_400_BAD_REQUEST)
-            promotion = Promotion.objects.get(id=pk)
-            
-            try:
-                Category.objects.get(id=data_promotion["category"])
-            except Category.DoesNotExist:
-                return Response("La categoria no existe", status=status.HTTP_400_BAD_REQUEST)
-            category = Category.objects.get(id=data_promotion["category"])
-
-            serializer_promotion = PromotionSerializer(data=data_promotion)
-   
-            if serializer_promotion.is_valid():
-                 
-                promotion.name = data_promotion["name"]
-                promotion.description = data_promotion["description"]
-                """
-                if ';base64,' in data_promotion["image"]:
-                    format, imgstr = data_promotion["image"].split(';base64,')
-                    ext = format.split('/')[-1]
-                    promotion.image = ContentFile(base64.b64decode(imgstr), name='temp.' + ext)
-                """
-                promotion.coin = data_promotion["coin"]
-                promotion.price = data_promotion["price"]
-                promotion.category = category
-                promotion.quantity = data_promotion["quantity"]
-                promotion.save()
-
-                if "Detail" in data:
-
-                    data_promDetail = data["Detail"]                   
-                    
-                    for item_detail in data_promDetail:
-                        #print(item_features)
-
-                        try:    
-                            PromotionDetail.objects.get(id=item_detail['id'])
-                        except PromotionDetail.DoesNotExist:
-                            return Response("detalle de promocion no existe", status=status.HTTP_400_BAD_REQUEST)                      
-                        detail =  PromotionDetail.objects.get(id=item_detail['id'])
-
-                        try:    
-                            Product.objects.get(id=item_detail['product'])
-                        except Product.DoesNotExist:
-                            return Response("El producto no existe", status=status.HTTP_400_BAD_REQUEST) 
-                        product = Product.objects.get(id=item_detail['product'])
-                        
-                        serializer_detail = PromotionDetailSerializer(data=item_detail)
-                        if serializer_detail.is_valid():
-                                                    
-                            detail.promotion = promotion
-                            detail.product = product
-                            detail.quantity = item_detail['quantity']
-                            detail.save()
-
-                            detail_array.append(PromotionDetailViewSerializer(detail).data)
-                        else:
-                            return Response(serializer_detail.errors, status=status.HTTP_400_BAD_REQUEST)
-                
-                if "newDetail" in data:
-                    
-                    data_newDetail = data["newDetail"]                   
-                    
-                    for item_detail in data_newDetail:
-                       
-                        try:    
-                            Product.objects.get(id=item_detail['product'])
-                        except Product.DoesNotExist:
-                            return Response("El producto no existe", status=status.HTTP_400_BAD_REQUEST)
-                        
-                        product = Product.objects.get(id=item_detail['product'])
-                        serializer_detail = PromotionDetailSerializer(data=item_detail)
-                        if serializer_detail.is_valid():
-                                                    
-                            detail = PromotionDetail()
-                            detail.promotion = promotion
-                            detail.product = product
-                            detail.quantity = item_detail['quantity']
-                            detail.save()
-
-                            detail_array.append(PromotionDetailViewSerializer(detail).data)
-                        else:
-                            return Response(serializer_detail.errors, status=status.HTTP_400_BAD_REQUEST)
-                
-                data_end = {
-                    "Promotion": serializer_promotion.data,
-                     "Detail": detail_array,
-                }
-
-                return Response(data_end)
-            else:
-                
-                return Response(serializer_promotion.errors, status=status.HTTP_400_BAD_REQUEST)
+        try:
+            Promotion.objects.get(id=pk)
+        except Promotion.DoesNotExist:
+            return Response("La Promomcion no existe", status=status.HTTP_400_BAD_REQUEST)
         
-        return Response("Debe suministrar informacion de la promocion", status=status.HTTP_400_BAD_REQUEST)
+        try:
+            Category.objects.get(id=data["category"])
+        except Category.DoesNotExist:
+            #return Response("La categoria no existe", status=status.HTTP_400_BAD_REQUEST)
+            return Response("categoria no es")   
 
-    def delete(self, request, pk, format=None):
-
-
-        """Eliminar una Promocion"""
-
+        category = Category.objects.get(id=data["category"])
         promotion = Promotion.objects.get(id=pk)
-        prom_detail= PromotionDetail.objects.filter(promotion=promotion)
-        detail_serializer = PromotionDetailSerializer(prom_detail, many=True)
     
-        for item_detail in detail_serializer.data:
-            detail = PromotionDetail.objects.get(id=item_detail["id"])
-            detail.delete()
+        promotion.name = data["name"]
+        promotion.description = data["description"]
+        promotion.image = data["image"]
+        promotion.coin = data["coin"]
+        promotion.price = data["price"]
+        promotion.category = category
+        promotion.quantity = data["quantity"]
+        promotion.save()
+        return Response("Promocion Actualizada", status=status.HTTP_200_OK)
         
-        promotion.delete()
-        
-        return Response("se ha eliminado la promocion",status=status.HTTP_204_NO_CONTENT)
 
-
-class PromocionDetailDeleteView(APIView):
+    
           
     def delete(self, request, pk, format=None):
 
         """Eliminar detalle de una promocion"""
-  
-        detail_promotion = PromotionDetail.objects.get(id=pk)
-        detail_promotion.delete()
-        return Response("se ha eliminado el detalle de esta promociom",status=status.HTTP_204_NO_CONTENT)
+        try:
+            Promotion.objects.get(id=pk)
+        except Promotion.DoesNotExist:
+            return Response("La Promomcion no existe", status=status.HTTP_400_BAD_REQUEST)
+        
+        promotion = Promotion.objects.get(id=pk)
+        products = PromotionDetail.objects.filter(promotion=pk)
+        for item in products:
+            item.delete()
+
+        products = PromotionDetail.objects.filter(promotion=pk)
+        if products:
+            return Response("La Promocion no pudo ser eliminada, aun tiene productos", status=status.HTTP_204_NO_CONTENT)
+        else:
+            promotion.delete()
+            return Response("La Promocion Ha sido Eliminada con Exito", status=status.HTTP_200_OK)
+
+      
+
+class PromotionDetailModificationView(APIView):
+
+    def put(self, request, pk, format=None):
+        data = request.data
+
+        try:
+            Promotion.objects.get(id=pk)
+        except Promotion.DoesNotExist:
+            return Response("La Promomcion no existe", status=status.HTTP_400_BAD_REQUEST)
+           
+        promotion = Promotion.objects.get(id=pk)
+        
+        products_in = data["products_detail"]
+
+        for item in products_in:
+            product_d = Product.objects.get(id=item["product"])
+
+            detail = PromotionDetail.objects.get(id=item["id"])
+            detail.product = product_d
+            detail.quantity = item["quantity"]
+            detail.save()
+        
+        products_news = data["products_news"]
+
+        for item in products_news:
+   
+            detail_new = {
+                "promotion" : promotion.id,
+                "product" : item["product"],
+                "quantity" : item["quantity"]
+             }
+            detail_serializer = PromotionDetailSerializer(data=detail_new)
+            if detail_serializer.is_valid():
+                detail_serializer.save() 
+            else:
+                print(detail_serializer.errors)
+        return Response("Promocion Actualizada", status=status.HTTP_200_OK)
+        
 
             
+class DeleteDetailPromotion(APIView):   
+
+    def delete(self, request, pk, format=None):
+        
+        try:
+
+            PromotionDetail.objects.get(id=pk)
+        except PromotionDetail.DoesNotExist:
+            return Response("El Producto no existe en esta promocion", status=status.HTTP_400_BAD_REQUEST)
+           
+        product = PromotionDetail.objects.get(id=pk)
+        product.delete()
+        return Response("Producto Eliminado de esta promociom",status=status.HTTP_200_OK)
+
+                  

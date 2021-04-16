@@ -43,7 +43,7 @@ class Migration(migrations.Migration):
                 ('modified', model_utils.fields.AutoLastModifiedField(default=django.utils.timezone.now, editable=False, verbose_name='modified')),
                 ('quantity', models.IntegerField(default=0)),
                 ('product', models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, to='products.Product')),
-                ('promotion', models.ForeignKey(default=0, on_delete=django.db.models.deletion.PROTECT, related_name='promotion_detail', to='promotions.Promotion')),
+                ('promotion', models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, related_name='promotion_detail', to='promotions.Promotion')),
             ],
             options={
                 'verbose_name': 'Detalle de promocion',
