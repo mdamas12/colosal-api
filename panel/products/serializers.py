@@ -79,14 +79,18 @@ class ProductListSearchSerializer(serializers.ModelSerializer):
             'picture'
             
         )
-    def to_representation(self,instance): 
 
+    def to_representation(self,instance):
         representation = super(ProductListSearchSerializer,self).to_representation(instance)
         if representation['image'] is not None:
+            print("antes")
+            print(representation['image'])
             domain_name = SERVER_URL
             if instance.image:
                 full_path = domain_name + instance.image.url
                 representation['image'] = full_path
+                print("despues")
+                print(representation['image'])
         return representation
     
 
