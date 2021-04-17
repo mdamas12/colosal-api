@@ -29,7 +29,7 @@ SECRET_KEY = 'lkam^9(ld!z-!35!+)oi@xyr!9_(d%m^8(_axfd5d93x3ex(ll'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["161.35.123.177","localhost","minimarketcolosal.com","127.0.0.1"]
 
 
 # Application definition
@@ -80,9 +80,17 @@ MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.BrokenLinkEmailsMiddleware',
     'django.middleware.common.CommonMiddleware',
+    'SistemaGestion.middleware.open_access_middleware'
 ]
 
-CORS_ORIGIN_ALLOW_ALL = True
+CORS_ORIGIN_ALLOW_ALL = False
+
+CORS_ORIGIN_WHITELIST = [
+    "http://minimarketcolosal.com",
+    "http://161.35.123.177",
+    "http://localhost",
+    "http://127.0.0.1"
+]
 
 ROOT_URLCONF = 'SistemaGestion.urls'
 
@@ -144,7 +152,7 @@ AUTH_PASSWORD_VALIDATORS = [
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework.authentication.BasicAuthentication',
-        'rest_framework.authentication.SessionAuthentication',
+        #'rest_framework.authentication.SessionAuthentication',
         'rest_framework.authentication.TokenAuthentication'
     ],
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.LimitOffsetPagination',

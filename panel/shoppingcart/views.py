@@ -47,7 +47,7 @@ class CustomPaginator(PageNumberPagination):
 
 class ShoppingcartCustomerView(APIView):
     pagination_class = PageNumberPagination
-    authentication_classes = [TokenAuthentication, SessionAuthentication, BasicAuthentication]
+    authentication_classes = [TokenAuthentication, BasicAuthentication]
     permission_classes = [IsAuthenticated]
 
     def get(self, request, format=None):
@@ -160,7 +160,7 @@ class AddPromotionShoppingcartView(APIView):
 
 class CustomerSearchView(APIView):
     pagination_class = PageNumberPagination
-    authentication_classes = [TokenAuthentication, SessionAuthentication, BasicAuthentication]
+    authentication_classes = [TokenAuthentication, BasicAuthentication]
     permission_classes = [IsAuthenticated]
 
     def post(self, request, format=None):
@@ -200,7 +200,7 @@ class SearchPromotionShoppView(APIView):
 
 class ChangeShoppingcartView(APIView):
     pagination_class = PageNumberPagination
-    authentication_classes = [TokenAuthentication, SessionAuthentication, BasicAuthentication]
+    authentication_classes = [TokenAuthentication, BasicAuthentication]
     permission_classes = [IsAuthenticated]
 
     def delete(self, request, pk, format=None):         

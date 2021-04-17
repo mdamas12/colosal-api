@@ -39,7 +39,7 @@ class CustomPaginator(PageNumberPagination):
 
 class SaleCreateView(APIView):
     pagination_class = PageNumberPagination
-    authentication_classes = [TokenAuthentication, SessionAuthentication, BasicAuthentication]
+    authentication_classes = [TokenAuthentication, BasicAuthentication]
     permission_classes = [IsAuthenticated]
      
     
@@ -350,7 +350,7 @@ class SaleListStatusWeb(APIView):
     """ Listar Compras de un cliente - servicio para la web """  
 
     pagination_class = PageNumberPagination
-    authentication_classes = [TokenAuthentication, SessionAuthentication, BasicAuthentication]
+    authentication_classes = [TokenAuthentication, BasicAuthentication]
     permission_classes = [IsAuthenticated]
 
     def get(self, request, pk, format=None):
@@ -377,7 +377,7 @@ class PurchaseUdateReference(APIView):
     """ Actualizar Referencia - servicio para la web """  
 
     pagination_class = PageNumberPagination
-    authentication_classes = [TokenAuthentication, SessionAuthentication, BasicAuthentication]
+    authentication_classes = [TokenAuthentication, BasicAuthentication]
     permission_classes = [IsAuthenticated]
     
     def put(self, request, pk, format=None):
