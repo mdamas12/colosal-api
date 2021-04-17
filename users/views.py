@@ -43,7 +43,7 @@ class UserFindView(ListAPIView):
 
 
 class UserRetrieveView(RetrieveAPIView):
-    authentication_classes = [TokenAuthentication, SessionAuthentication, BasicAuthentication]
+    authentication_classes = [TokenAuthentication, BasicAuthentication]
     permission_classes = [IsAuthenticated]
     serializer_class = UserSerializer
 
