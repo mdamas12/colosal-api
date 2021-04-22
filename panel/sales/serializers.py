@@ -1,15 +1,16 @@
 from rest_framework import serializers
 from panel.products.serializers import ProductListSearchSerializer
 from panel.payments.serializers import listpaymentsSerializer
+from panel.promotions.serializers import PromotionFullSerializer
 from users.serializers import UserSerializer
 from .models import *
 
 # serializador para guardar una venta
 class SaleSerializer(serializers.ModelSerializer):
-    customer = serializers.IntegerField(read_only=True)
-    bank = serializers.IntegerField(read_only=True)
-    amount = serializers.DecimalField(max_digits=19, decimal_places=2, required=False) 
-    status = serializers.CharField(required=False)
+    #customer = serializers.IntegerField(read_only=True)
+    #bank = serializers.IntegerField(read_only=True)
+    #amount = serializers.DecimalField(max_digits=19, decimal_places=2, required=False) 
+    #status = serializers.CharField(required=False)
   
 
     class Meta:
@@ -17,8 +18,8 @@ class SaleSerializer(serializers.ModelSerializer):
         fields = ('__all__')
 
 class SaleDetailSerializer(serializers.ModelSerializer):
-    product = serializers.IntegerField(read_only=True)
-    sale = serializers.IntegerField(read_only=True)
+    #product = serializers.IntegerField(read_only=True)
+    #sale = serializers.IntegerField(read_only=True)
     status = serializers.CharField(required=False)
     class Meta:
         model = SaleDetail
@@ -26,6 +27,7 @@ class SaleDetailSerializer(serializers.ModelSerializer):
 
 class SaleDetailViewSerializer(serializers.ModelSerializer):
     product = ProductListSearchSerializer(many=False)
+    promotion = PromotionFullSerializer(many=False)
     #sale = SaleSerializer()
 
     class Meta:
@@ -37,6 +39,7 @@ class SaleDetailViewSerializer(serializers.ModelSerializer):
             'amount',
             'status',
             'product',
+            'promotion'
         )
 
 
@@ -55,6 +58,7 @@ class SaleViewchSerializer(serializers.ModelSerializer):
             'bank',
             'coin',
             'amount',
+            'reference',
             'status',
             'detail_sale'
 

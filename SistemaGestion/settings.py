@@ -29,13 +29,13 @@ SECRET_KEY = 'lkam^9(ld!z-!35!+)oi@xyr!9_(d%m^8(_axfd5d93x3ex(ll'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ["161.35.123.177"]
+ALLOWED_HOSTS = ["161.35.123.177","localhost","minimarketcolosal.com","127.0.0.1"]
 
 
 # Application definition
 
 INSTALLED_APPS = [
-    'django.contrib.admin',
+    'django.contrib.admin', 
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
@@ -61,6 +61,9 @@ INSTALLED_APPS = [
     'panel.payments',
     'panel.shoppingcart',
     'panel.sales',
+    'profileUser',
+    'web',
+    'web.home',
 ]
 
 SITE_ID = 1
@@ -73,6 +76,22 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+
+    'corsheaders.middleware.CorsMiddleware',
+    'django.middleware.common.BrokenLinkEmailsMiddleware',
+    'django.middleware.common.CommonMiddleware',
+    'SistemaGestion.middleware.open_access_middleware'
+]
+
+CORS_ORIGIN_ALLOW_ALL = False
+
+CORS_ORIGIN_WHITELIST = [
+    "http://minimarketcolosal.com",
+    "http://161.35.123.177",
+    "http://localhost",
+    "http://localhost:8080",
+    "http://127.0.0.1",
+    "http://localhost:3333",
 ]
 
 ROOT_URLCONF = 'SistemaGestion.urls'
@@ -129,9 +148,17 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+
+
+
 REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.BasicAuthentication',
+        #'rest_framework.authentication.SessionAuthentication',
+        'rest_framework.authentication.TokenAuthentication'
+    ],
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.LimitOffsetPagination',
-    'PAGE_SIZE': 25
+    'PAGE_SIZE': 25,
 }
 
 REST_AUTH_REGISTER_SERIALIZERS = {
@@ -162,4 +189,11 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.0/howto/static-files/
 
+SERVER_URL = env('SERVER_URL')
+
 STATIC_URL = '/static/'
+MEDIA_URL = os.path.join(BASE_DIR,'/media/') 
+
+#MEDIA_URL =  SERVER_URL+'/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR,'media') 
+

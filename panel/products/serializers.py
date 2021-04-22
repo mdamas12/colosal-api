@@ -1,5 +1,5 @@
 from rest_framework import serializers
-
+from  SistemaGestion.settings import *
 from panel.brands.serializers import BrandSerializer, BrandDetailSerializer
 from panel.categories.serializers import CategorySerializer, CategoriesDetailSerializer
 from panel.characteristics.serializers import CharacteristicViewSerializer
@@ -7,8 +7,8 @@ from .models import *
 
 # serializador para guardar producto
 class ProductSerializer(serializers.ModelSerializer):
-    category = serializers.IntegerField(read_only=True)
-    brand = serializers.IntegerField(read_only=True)
+    #category = serializers.IntegerField(read_only=True)
+    #brand = serializers.IntegerField(read_only=True)
     #image = serializers.CharField(required=True)
 
     class Meta:
@@ -16,8 +16,8 @@ class ProductSerializer(serializers.ModelSerializer):
         fields = ('__all__')
 
 class ProductDetailSerializer(serializers.ModelSerializer):
-    product = serializers.IntegerField(read_only=True)
-    characteristic = serializers.IntegerField(read_only=True)
+    #product = serializers.IntegerField(read_only=True)
+    #characteristic = serializers.IntegerField(read_only=True)
     class Meta:
         model = ProductDetail
         fields = ('__all__')
@@ -42,7 +42,7 @@ class ProductDetailMixinSerializer(serializers.ModelSerializer):
 
 
 class ProductGalleryMixinSerializer(serializers.ModelSerializer):
-
+   
     class Meta:
         model = ProductGallery
         fields = ('__all__')
@@ -62,6 +62,7 @@ class ProductListSearchSerializer(serializers.ModelSerializer):
     category = CategoriesDetailSerializer(many=False)
     brand = BrandDetailSerializer(many=False)
     detail_product = ProductDetailViewSerializer(many=True)
+    picture = ProductGalleryMixinSerializer(many=True)
     class Meta:
         model = Product
         fields = (
@@ -74,8 +75,23 @@ class ProductListSearchSerializer(serializers.ModelSerializer):
             'image',
             'category',
             'brand',
-            'detail_product'
+            'detail_product',
+            'picture'
             
         )
+
+    def to_representation(self,instance):
+        representation = super(ProductListSearchSerializer,self).to_representation(instance)
+        if representation['image'] is not None:
+            print("antes")
+            print(representation['image'])
+            domain_name = SERVER_URL
+            if instance.image:
+                full_path = domain_name + instance.image.url
+                representation['image'] = full_path
+                print("despues")
+                print(representation['image'])
+        return representation
+    
 
     

@@ -13,7 +13,11 @@ base_router = routers.SimpleRouter()
 
 urlpatterns = [
     path('detail/<int:pk>/', views.SalesDetailView.as_view()),
+    path('list-status/<int:pk>/', views.SaleListStatusView.as_view()), 
+    path('list-order/<int:pk>/', views.SaleListStatusWeb.as_view()), 
+    path('update-reference/<int:pk>/', views.PurchaseUdateReference.as_view()), 
     path('product-sale/<int:pk>/', views.ProductSale.as_view()),
+    path(r'customer/<str:search>/', views.CustomerSearch.as_view()),
     path('sale-panel/', views.SalespanelView.as_view()),
     url(r'', views.SaleCreateView.as_view()),
    

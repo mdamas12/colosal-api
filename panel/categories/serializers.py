@@ -1,11 +1,18 @@
 from rest_framework import serializers
+from django import forms
 from .models import *
+
+
 
 
 class CategorySerializer(serializers.ModelSerializer):
     class Meta:
         model = Category
-        fields = '__all__'
+        fields = (
+            'id',
+            'name',
+            'image'
+        )
 
 class CategoriesDetailSerializer(serializers.ModelSerializer):
 
@@ -13,5 +20,6 @@ class CategoriesDetailSerializer(serializers.ModelSerializer):
         model = Category
         fields = (
             'id',
-            'name'
+            'name',
+            'image'
         )

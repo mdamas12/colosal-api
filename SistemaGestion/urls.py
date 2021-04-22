@@ -15,24 +15,24 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
+from django.conf import settings
+from django.conf.urls.static import static
 from django.conf.urls import url
 from django.conf.urls import include
-from rest_framework import routers
 from rest_framework_swagger.views import get_swagger_view
-
-from users.views import UserViewSet
 
 schema_view = get_swagger_view(title='API Sistema-bodegon')
 
-
-base_router = routers.SimpleRouter()
-base_router.register(r'users', UserViewSet)
-
 urlpatterns = [
-    url(r'^', include(base_router.urls)),
     url(r'^auth/', include('rest_auth.urls')),
     url(r'^auth/registration/', include('rest_auth.registration.urls')),
     url(r'^docs/', schema_view),
     url(r'^panel/', include('panel.urls')),
+    url(r'^web/', include('web.urls')),
+    url(r'^users/', include('users.urls')),
     path('admin/', admin.site.urls),
 ]
+
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root = settings.MEDIA_ROOT)
+

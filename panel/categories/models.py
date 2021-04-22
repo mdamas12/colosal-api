@@ -6,6 +6,9 @@ from model_utils.models import TimeStampedModel
 class Category(TimeStampedModel):
     
     name = models.CharField(unique=True, max_length=255)
+    image = models.FileField(upload_to='categories', null=True)
+  
+
 
     class Meta:
         verbose_name = "Categoria"

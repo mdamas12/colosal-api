@@ -9,18 +9,22 @@ from rest_framework.response import Response
 
 from panel.products.models import * 
 
+from panel.promotions.models import * 
+
 
 class Shoppingcart(TimeStampedModel):
 
-    customer = models.ForeignKey(User, related_name='shoppingcart', on_delete=models.PROTECT)
-    product = models.ForeignKey(Product, on_delete=models.PROTECT)
+    customer = models.ForeignKey(User, related_name='shoppingcart', on_delete=models.DO_NOTHING)
+    product = models.ForeignKey(Product, on_delete=models.DO_NOTHING, null=True)
+    promotion = models.ForeignKey(Promotion, on_delete=models.DO_NOTHING, null=True)
     quantity = models.IntegerField(default=0)
     amount = models.DecimalField(max_digits=19, decimal_places=2)
     status = models.CharField(max_length=15)
     
+  
 
     class Meta:
         verbose_name = "Carrito de Compra"
         verbose_name_plural = "Carrito de Compras"
 
-    def __str__(self): return self.custumer
+    def __str__(self): return self.customer

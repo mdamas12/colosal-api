@@ -1,0 +1,18 @@
+Content-Type: text/plain; charset="utf-8"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Subject: [example.com] Please Confirm Your E-mail Address
+From: webmaster@localhost
+To: negro@gmail.com
+Date: Fri, 02 Apr 2021 18:42:23 -0000
+Message-ID: <161738894341.63.12864380339422411668@d3c5a299faff>
+
+Hello from example.com!
+
+You're receiving this e-mail because user negrito has given your e-mail address to register an account on example.com.
+
+To confirm this is correct, go to http://localhost:8000/auth/registration/account-confirm-email/NQ:1lSOkR:AkaIODS2MxGi3NB9ZusePMiyodo/
+
+Thank you for using example.com!
+example.com
+-------------------------------------------------------------------------------

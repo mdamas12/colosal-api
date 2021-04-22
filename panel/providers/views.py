@@ -1,5 +1,6 @@
 from rest_framework.generics import ListAPIView
 from rest_framework.views import APIView
+from django.db.models import Q
 from .models import *
 from .serializers import *
 
@@ -21,3 +22,10 @@ class ProviderViewSet(
     permission_classes = (AllowAny,)
     serializer_class = ProviderMixinSerializer
 
+class SupplierSearch(APIView):
+      
+    def get(self, request, search, format=None):
+        """busqueda de productos"""
+        supplier = Provider.objects.filter(Q(name__icontains = search))
+        serializer = ProviderDetailSerializer(supplier, many=True)
+        return Response(serializer.data)

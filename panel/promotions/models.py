@@ -13,7 +13,7 @@ class Promotion(TimeStampedModel):
 
     name = models.CharField(max_length=255)
     description = models.TextField(null=True,blank=True)
-    image = models.FileField(upload_to='uploads', null=True)
+    image = models.FileField(upload_to='promotions', null=True)
     price = models.DecimalField(max_digits=19, decimal_places=2)
     coin = models.CharField(max_length=20,choices=COINS,default="USD")
     category = models.ForeignKey(Category, on_delete=models.PROTECT, related_name='%(class)s_category')
@@ -29,7 +29,7 @@ class Promotion(TimeStampedModel):
 
 class PromotionDetail(TimeStampedModel):
 
-    promotion = models.ForeignKey(Promotion, related_name='promotion_detail', default=0, on_delete=models.PROTECT)
+    promotion = models.ForeignKey(Promotion, related_name='promotion_detail', on_delete=models.PROTECT, null=True)
     product = models.ForeignKey(Product, on_delete=models.PROTECT, related_name='%(class)s_product')
     quantity = models.IntegerField(default=0)
 
