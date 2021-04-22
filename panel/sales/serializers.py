@@ -1,6 +1,7 @@
 from rest_framework import serializers
 from panel.products.serializers import ProductListSearchSerializer
 from panel.payments.serializers import listpaymentsSerializer
+from panel.promotions.serializers import PromotionFullSerializer
 from users.serializers import UserSerializer
 from .models import *
 
@@ -26,6 +27,7 @@ class SaleDetailSerializer(serializers.ModelSerializer):
 
 class SaleDetailViewSerializer(serializers.ModelSerializer):
     product = ProductListSearchSerializer(many=False)
+    promotion = PromotionFullSerializer(many=False)
     #sale = SaleSerializer()
 
     class Meta:
