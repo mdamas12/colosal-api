@@ -89,6 +89,7 @@ CORS_ORIGIN_WHITELIST = [
     "http://minimarketcolosal.com",
     "http://161.35.123.177",
     "http://localhost",
+    "http://localhost:8080",
     "http://127.0.0.1"
 ]
 
