@@ -90,7 +90,8 @@ CORS_ORIGIN_WHITELIST = [
     "http://161.35.123.177",
     "http://localhost",
     "http://localhost:8080",
-    "http://127.0.0.1"
+    "http://127.0.0.1",
+    "http://localhost:3333",
 ]
 
 ROOT_URLCONF = 'SistemaGestion.urls'
