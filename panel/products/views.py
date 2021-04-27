@@ -160,7 +160,7 @@ class GalleryCreateView(APIView):
     def post(self,request,format=None):
         """Guardar un Galeria"""
         data = request.data
-        print(data["product"])
+        #print(data["product"])
         if  data: 
             tam = len(data)
             i=0
@@ -203,135 +203,37 @@ class ProductSearchView(APIView):
         """Actualizar un Producto"""
         
         data = request.data
-        features_array = []
-        gallery_array = []
-        #print(data)
-        
         try:
             Product.objects.get(id=pk)
         except Product.DoesNotExist:
             return Response("El producto no existe", status=status.HTTP_400_BAD_REQUEST)
         
+        product = Product.objects.get(id=pk)
+
+        try:
+            Category.objects.get(id=data["category"])
+        except Category.DoesNotExist:
+            return Response("La categoria no existe", status=status.HTTP_400_BAD_REQUEST)
+        category = Category.objects.get(id=data["category"])
+        try:
+            Brand.objects.get(id=data["brand"])
+        except Brand.DoesNotExist:
+            return Response("La Marca no existe", status=status.HTTP_400_BAD_REQUEST)
+        brand = Brand.objects.get(id=data["brand"])
+    
+        product.name = data["name"]
+        product.description = data["description"]
+        product.image =  data["image"]
+        product.coin = data["coin"]
+        product.price = data["price"]
+        product.category = category
+        product.brand = brand
+        product.quantity = data["quantity"]
+        product.save()
         
-        #if "purchase" in data and "products" in data:
-        if "product" in data:
-            
-            data_product = data["product"]
-            
-            try:
-                Category.objects.get(id=data_product["category"])
-            except Category.DoesNotExist:
-                return Response("La categoria no existe", status=status.HTTP_400_BAD_REQUEST)
-
-            category = Category.objects.get(id=data_product["category"])
-
-            try:
-                 Brand.objects.get(id=data_product["brand"])
-            except Brand.DoesNotExist:
-                return Response("La Marca no existe", status=status.HTTP_400_BAD_REQUEST)
-            
-            brand = Brand.objects.get(id=data_product["brand"])
-
-            serializer_product = ProductSerializer(data=data_product)
-   
-            if serializer_product.is_valid():
-                product = Product.objects.get(id=pk)
-                product.name = data_product["name"]
-                product.description = data_product["description"]
-                product.image =  data_product["image"]
-                product.coin = data_product["coin"]
-                product.price = data_product["price"]
-                product.category = category
-                product.brand = brand
-                product.quantity = data_product["quantity"]
-                product.save()
-
-                #registro de detalle de compra
-                if "features" in data:
-                    
-                    
-                    data_features = data["features"]                   
-                    
-                    for item_features in data_features:
-
-                        try:    
-                            detail_product = ProductDetail.objects.get(id=item_features['id'])
-                        except detail_product.DoesNotExist:
-                            return Response("el ID de Detalle no existe", status=status.HTTP_400_BAD_REQUEST)
-                        
-                        try:    
-                            characteristic = Characteristic.objects.get(id=item_features['feature'])
-                        except characteristic.DoesNotExist:
-                            return Response("La Caracteristica no existe", status=status.HTTP_400_BAD_REQUEST)
-                        
-                        serializer_detail = ProductDetailSerializer(data=item_features)
-                        if serializer_detail.is_valid():
-                                                    
-                            detail_product.characteristic = characteristic
-                            detail_product.description = item_features['description']
-                            detail_product.save()
-                            #features_array.append(serializer_feature.data)
-                            features_array.append(ProductDetailViewSerializer(detail_product).data)
-                        else:
-                            return Response(serializer_detail.errors, status=status.HTTP_400_BAD_REQUEST)
-                
-
-                if "gallery" in data:
-                    
-                    data_gallery = data["gallery"]
-                    
-
-                    for item_gallery in data_gallery:
-                        
-                        serializer_gallery = ProductGalleryMixinSerializer(data=item_gallery)
-                        if serializer_gallery.is_valid():
-                                                    
-                            gallery = ProductGallery()
-                            gallery.product = product
-                            gallery.image = item_gallery['image']
-                            gallery.save()
-                            gallery_array.append(serializer_gallery.data)
-                        else:
-                            return Response(serializer_gallery.errors, status=status.HTTP_400_BAD_REQUEST)
-
-                #registro de detalle de compra
-                if "news_features" in data:
-                    
-                    data_news_features = data["news_features"]                   
-                    
-                    for item_features in data_news_features:
-                        try:    
-                            characteristic = Characteristic.objects.get(id=item_features['feature'])
-                        except characteristic.DoesNotExist:
-                            return Response("La Caracteristica no existe", status=status.HTTP_400_BAD_REQUEST)
-                        
-                        serializer_feature = ProductDetailSerializer(data=item_features)
-                        if serializer_feature.is_valid():
-                                                    
-                            feature = ProductDetail()
-                            feature.product = product
-                            feature.characteristic = characteristic
-                            feature.description = item_features['description']
-                            feature.save()
-                            #features_array.append(serializer_feature.data)
-                            features_array.append(ProductDetailViewSerializer(feature).data)
-                        else:
-                            return Response(serializer_feature.errors, status=status.HTTP_400_BAD_REQUEST)
+        return Response("Producto Actualizado", status=status.HTTP_200_OK)
 
 
-
-                data_end = {
-                    "Product": serializer_product.data,
-                    "Detail": features_array,
-                    "Gallery": gallery_array,
-                }
-
-                return Response(data_end)
-            else:
-                
-                return Response(serializer_product.errors, status=status.HTTP_400_BAD_REQUEST)
-        
-        return Response("Debe suministrar informacion de producto", status=status.HTTP_400_BAD_REQUEST)
 
 
 
@@ -357,6 +259,38 @@ class ProductDetailView(APIView):
         #detail = ProductDetail.objects.all()
         serializer = ProductDetailMixinSerializer(detail, many=False)
         return Response(serializer.data)
+
+    def put(self, request, pk, format=None):
+        data = request.data
+        for item in data["features"]:
+           
+         
+            try:    
+                Characteristic.objects.get(id=item["characteristic"]["id"])
+            except Characteristic.DoesNotExist:
+                return Response("La Caracteristica no existe", status=status.HTTP_400_BAD_REQUEST)
+            characteristic = Characteristic.objects.get(id=item["characteristic"]["id"])
+
+            detail = ProductDetail.objects.get(id=item["id"])
+            detail.characteristic = characteristic
+            detail.description = item["description"]
+            detail.save()
+           
+        if data["features_news"]:
+            for item in data["features_news"]:
+                new_feature = {
+                    'product': pk,
+                    'characteristic': item["characteristic"]["id"],
+                    'description': item["description"]
+                }
+                serializer = ProductDetailSerializer(data=new_feature, many=False)
+                if serializer.is_valid():
+                    serializer.save()
+                else:
+                    return Response("nueva caracteristica no pudo ser registrada", status=status.HTTP_400_BAD_REQUEST)  
+                
+        return Response("Detalle de Producto Actualizado", status=status.HTTP_200_OK)
+
        
     
     def delete(self, request, pk, format=None):
@@ -366,6 +300,34 @@ class ProductDetailView(APIView):
         detail_product = ProductDetail.objects.get(id=pk)
         detail_product.delete()
         return Response("se ha eliminado el detalle para este producto",status=status.HTTP_204_NO_CONTENT)
+
+class GallerySearchView(APIView):
+
+    def put(self, request, pk, format=None):
+        data = request.data
+        print(data)
+        if  data: 
+            tam = len(data)//2
+            i=0
+   
+            while i < tam-1:
+                id_galelry = data["id["+str(i)+"]"]
+                gallery = ProductGallery.objects.get(id = id_galelry) 
+                gallery.image = data["image["+str(i)+"]"]
+                gallery.save()
+                i+=1
+
+        return Response("Galeria Actualizada", status=status.HTTP_200_OK)
+
+    def delete(self, request, pk, format=None):
+        
+        """Eliminar Galeria (imagen) de un producto"""
+  
+        gallery_product = ProductGallery.objects.get(id=pk)
+        gallery_product.delete()
+        return Response("se ha eliminado la imagen para este producto",status=status.HTTP_204_NO_CONTENT)
+
+
 
 class ProductCoincidence(APIView):
       

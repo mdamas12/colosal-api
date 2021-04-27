@@ -47,6 +47,15 @@ class ProductGalleryMixinSerializer(serializers.ModelSerializer):
         model = ProductGallery
         fields = ('__all__')
 
+    def to_representation(self,instance):
+        representation = super(ProductGalleryMixinSerializer,self).to_representation(instance)
+        if representation['image'] is not None:
+            domain_name = SERVER_URL
+            if instance.image:
+                full_path = domain_name + instance.image.url
+                representation['image'] = full_path
+        return representation
+
 
 class ProductDetailViewSerializer(serializers.ModelSerializer):
     characteristic = CharacteristicViewSerializer()

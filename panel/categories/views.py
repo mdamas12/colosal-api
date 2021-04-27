@@ -41,29 +41,34 @@ class CategoryCreateView(APIView):
         """Crear Categoria"""
         
         data = request.data
-        #print(request.data)
+        print(data)
         #return Response(data)
-        serializer_categories = CategorySerializer(data=request.data)
-   
-        if serializer_categories.is_valid():
+        if data["image"] == 'null':
+            category = {
+                'name' : data["name"]         
+            }
            
-            category = Category()
-            category.name = data["name"]
-            category.image =  data["image"]
-            """
-            if ';base64,' in data_product["image"]:
-                format, imgstr = data_product["image"].split(';base64,')
-                ext = format.split('/')[-1]
-                product.image = ContentFile(base64.b64decode(imgstr), name='temp.' + ext)
-            """
-            category.save()
+        else:
+
+            category = {
+                'name' : data["name"],
+                'image' :  data["image"]
+            }
+         
+        serializer_categories = CategorySerializer(data=category)
+   
+        if serializer_categories.is_valid():   
+            serializer_categories.save()
             new_category = Category.objects.latest('created')
             serializer = CategoriesDetailSerializer(new_category, many=False)
             return Response(serializer.data,status=status.HTTP_201_CREATED)
         
         else:
-            return Response(request.data, status=status.HTTP_400_BAD_REQUEST)
-    
+            return Response("erro al validar informacion", status=status.HTTP_400_BAD_REQUEST)
+
+            
+
+
 class listAllCategories(APIView):
       
     def get(self, request, format=None):

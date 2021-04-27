@@ -14,6 +14,7 @@ urlpatterns = [
    
     path(r'search/<int:pk>/', views.ProductSearchView.as_view()),
     path(r'product-detail/<int:pk>/', views.ProductDetailView.as_view()),
+    path(r'gallery-search/<int:pk>/', views.GallerySearchView.as_view()),
     path(r'coincidence/<str:search>/',views.ProductCoincidence.as_view()),
     url(r'features/', views.FeaturesCreateView.as_view()), 
     url(r'gallery/', views.GalleryCreateView.as_view()), 
