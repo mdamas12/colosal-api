@@ -28,7 +28,7 @@ class UserRepository(object):
             user.save()
             self.send_mail_recover(user.first_name, email, new_password)
             return email
-        except User.DoesNotExits:
+        except User.DoesNotExist:
             raise UserRecoverPassword.Exception("Email no existe")
 
     @staticmethod
