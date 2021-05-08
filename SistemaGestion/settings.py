@@ -172,8 +172,15 @@ REST_AUTH_SERIALIZERS = {
     'REGISTER_SERIALIZER': 'users.serializers.RegisterSerializer',
 }
 
-EMAIL_BACKEND = 'django.core.mail.backends.filebased.EmailBackend'
+#EMAIL_BACKEND = 'django.core.mail.backends.filebased.EmailBackend'
 EMAIL_FILE_PATH = os.path.join(BASE_DIR, 'tmp/email')
+
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_HOST_USER = 'luistundisi@gmail.com'
+EMAIL_HOST_PASSWORD = 'qhrogyadslkvbypf' #past the key or password app here
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+DEFAULT_FROM_EMAIL = 'luistundisi@gmail.com'
 
 # Internationalization
 # https://docs.djangoproject.com/en/2.0/topics/i18n/

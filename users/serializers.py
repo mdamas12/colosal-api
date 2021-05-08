@@ -19,6 +19,14 @@ class UserSerializer(serializers.ModelSerializer):
         exclude = ('user_permissions','groups')
 
 
+class UserEmailSerializer(serializers.ModelSerializer):
+    email = serializers.EmailField(required=True)
+
+    class Meta:
+        model = User
+        fields = ('email',)
+
+
 class RegisterSerializer(RegisterSerializer):
     is_superuser = serializers.BooleanField()
     email = serializers.EmailField()

@@ -24,3 +24,16 @@ class UserRegister(object):
 
     def execute(self):
         return self.repository.create_user(self.data)
+
+
+class UserRecoverPassword(object):
+
+    class Exception(Exception):
+        pass
+
+    def __init__(self, repository, email):
+        self.repository = repository
+        self.email = email
+
+    def execute(self):
+        return self.repository.reset_password(self.email)
