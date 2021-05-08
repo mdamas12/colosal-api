@@ -29,7 +29,7 @@ SECRET_KEY = 'lkam^9(ld!z-!35!+)oi@xyr!9_(d%m^8(_axfd5d93x3ex(ll'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ["161.35.123.177","localhost","minimarketcolosal.com","127.0.0.1"]
+ALLOWED_HOSTS = ["161.35.123.177","localhost","minimarketcolosal.com","127.0.0.1","localhost:3333"]
 
 
 # Application definition
@@ -84,7 +84,7 @@ MIDDLEWARE = [
     'SistemaGestion.middleware.open_access_middleware'
 ]
 
-#CORS_ORIGIN_ALLOW_ALL = True
+CORS_ORIGIN_ALLOW_ALL = True
 
 
 CORS_ORIGIN_WHITELIST = [

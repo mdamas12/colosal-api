@@ -8,7 +8,7 @@ from django.contrib.auth.models import User
 
 from users.usecases.registerUsecase import UserRegisterUsecase
 from users.usecases.usescases import *
-
+from profileUser.models import Profile
 
 class UserSetDataView(CreateAPIView, UpdateAPIView):
     serializer_class = UserSerializer
@@ -19,6 +19,17 @@ class UserSetDataView(CreateAPIView, UpdateAPIView):
         return usecase.execute()
 
     def perform_update(self, serializer):
+        if "phone" in self.request.data:
+            try:
+                profile = Profile.objects.get(user=serializer.instance)
+                profile.phone = self.request.data["phone"]
+                profile.save()
+            except Profile.DoesNotExist:
+                profile = Profile()
+                profile.user = serializer.instance
+                profile.phone = self.request.data["phone"]
+                profile.save()
+
         serializer.instance.set_password(serializer.validated_data["password"])
         serializer.validated_data.pop("password")
         serializer.save()
