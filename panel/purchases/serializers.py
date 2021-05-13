@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from panel.products.serializers import ProductMixinSerializer, ProductDetailSerializer
+from panel.products.serializers import ProductMixinSerializer, ProductListSearchSerializer
 from panel.providers.serializers import ProviderMixinSerializer, ProviderDetailSerializer
 from panel.purchases.models import *
 
@@ -22,7 +22,7 @@ class PurshaseDetailSerializer(serializers.ModelSerializer):
 class PurshaseDetailCreateSerializer(serializers.ModelSerializer):
     #purchase = PurchaseMixinSerializer()
     #purchase = serializers.IntegerField()
-    purchase = serializers.IntegerField(read_only=True)
+    #purchase = serializers.IntegerField(read_only=True)
 
     class Meta:
         model = PurchaseDetail
@@ -41,7 +41,7 @@ class PurshaseDetailCreateSendSerializer(serializers.ModelSerializer):
 class ListPurshaseDetailSerializer(serializers.ModelSerializer):
     #purchase = PurchaseMixinSerializer()
     #purchase = serializers.IntegerField()
-    product = ProductDetailSerializer(many=False)
+    product = ProductListSearchSerializer(many=False)
     #Provider = ProviderMixinSerializer(many=false)
     class Meta:
         model = PurchaseDetail
@@ -52,7 +52,7 @@ class ListPurshaseDetailSerializer(serializers.ModelSerializer):
             'purchase_quantity',
             'purchase_Received',
             'status',
-            'product',
+            'product'
         )
 
 class ListPurshaseSerializer(serializers.ModelSerializer):

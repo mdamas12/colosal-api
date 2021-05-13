@@ -83,9 +83,9 @@ MIDDLEWARE = [
     'SistemaGestion.middleware.open_access_middleware'
 ]
 
-#CORS_ORIGIN_ALLOW_ALL = True
+CORS_ORIGIN_ALLOW_ALL = True
 
-
+"""
 CORS_ORIGIN_WHITELIST = [
     "http://minimarketcolosal.com",
     "http://161.35.123.177",
@@ -94,7 +94,7 @@ CORS_ORIGIN_WHITELIST = [
     "http://127.0.0.1",
     "http://localhost:3333", 
 ]
-
+"""
 
 ROOT_URLCONF = 'SistemaGestion.urls'
 

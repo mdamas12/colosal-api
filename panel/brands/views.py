@@ -9,6 +9,7 @@ class BrandViewSet(
     mixins.RetrieveModelMixin,
     mixins.CreateModelMixin,
     mixins.UpdateModelMixin,
+    mixins.DestroyModelMixin,
     viewsets.GenericViewSet
 ):
     queryset = Brand.objects.all().order_by('-modified')

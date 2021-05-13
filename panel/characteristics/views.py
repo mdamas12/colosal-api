@@ -9,6 +9,7 @@ class CharacteristicViewSet(
     mixins.RetrieveModelMixin,
     mixins.CreateModelMixin,
     mixins.UpdateModelMixin,
+    mixins.DestroyModelMixin,
     viewsets.GenericViewSet
 ):
     queryset = Characteristic.objects.all().order_by('-modified')

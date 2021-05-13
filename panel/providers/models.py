@@ -13,6 +13,7 @@ class Provider(TimeStampedModel):
     address = models.TextField(null=True,blank=True)
     email = models.TextField(null=True,blank=True)
     number = models.TextField(null=True,blank=True)
+    agent = models.CharField(max_length=255)
   
     class Meta:
         verbose_name = "Proveedor"
