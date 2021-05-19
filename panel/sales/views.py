@@ -205,6 +205,7 @@ class SalesDetailView(APIView):
             return Response("La venta no existe", status=status.HTTP_400_BAD_REQUEST)
             
         sale = Sale.objects.get(id=pk)
+        SaleDetail.objects.filter(sale=sale).delete()
         sale.delete()
         return Response("La venta ha sido eliminada")
 

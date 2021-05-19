@@ -61,6 +61,7 @@ INSTALLED_APPS = [
     'panel.payments',
     'panel.shoppingcart',
     'panel.sales',
+    'panel.header',
     'profileUser',
     'web',
     'web.home',
@@ -155,12 +156,14 @@ AUTH_PASSWORD_VALIDATORS = [
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
+       
         'rest_framework.authentication.BasicAuthentication',
         #'rest_framework.authentication.SessionAuthentication',
         'rest_framework.authentication.TokenAuthentication'
     ],
+    
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.LimitOffsetPagination',
-    'PAGE_SIZE': 25,
+    'PAGE_SIZE': 1,
 }
 
 REST_AUTH_REGISTER_SERIALIZERS = {

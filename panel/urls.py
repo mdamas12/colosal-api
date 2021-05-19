@@ -12,4 +12,5 @@ urlpatterns = [
     url(r'^payments/', include('panel.payments.urls')),
     url(r'^shoppingcart/', include('panel.shoppingcart.urls')),
     url(r'^sales/', include('panel.sales.urls')),
+    url(r'^header/', include('panel.header.urls')),
 ]
