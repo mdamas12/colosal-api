@@ -12,6 +12,7 @@ base_router.register(r'', views.UserViewSet)
 urlpatterns = [
     url(r'^find/', views.UserFindView.as_view()),
     url(r'^me/', views.UserRetrieveView.as_view()),
+    url(r'^recove/', views.UserRecoverPasswordView.as_view()),
     url(r'^', include(base_router.urls)),
 ]
 urlpatterns = format_suffix_patterns(urlpatterns)
