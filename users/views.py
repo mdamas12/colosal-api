@@ -3,12 +3,12 @@ from rest_framework.authentication import TokenAuthentication, SessionAuthentica
 from rest_framework.generics import ListAPIView, RetrieveAPIView, UpdateAPIView, CreateAPIView
 from rest_framework.permissions import IsAuthenticated
 from users.repository import UserRepository
-from users.serializers import UserSerializer, RegisterSerializer
+from users.serializers import UserSerializer, RegisterSerializer, UserEmailSerializer
 from django.contrib.auth.models import User
 
 from users.usecases.registerUsecase import UserRegisterUsecase
 from users.usecases.usescases import *
-
+from profileUser.models import Profile
 
 class UserSetDataView(CreateAPIView, UpdateAPIView):
     serializer_class = UserSerializer
@@ -19,6 +19,17 @@ class UserSetDataView(CreateAPIView, UpdateAPIView):
         return usecase.execute()
 
     def perform_update(self, serializer):
+        if "phone" in self.request.data:
+            try:
+                profile = Profile.objects.get(user=serializer.instance)
+                profile.phone = self.request.data["phone"]
+                profile.save()
+            except Profile.DoesNotExist:
+                profile = Profile()
+                profile.user = serializer.instance
+                profile.phone = self.request.data["phone"]
+                profile.save()
+
         serializer.instance.set_password(serializer.validated_data["password"])
         serializer.validated_data.pop("password")
         serializer.save()
@@ -74,3 +85,18 @@ class UserRegisterView(CreateAPIView):
     @property
     def repository(self):
         return UserRepository()
+
+
+class UserRecoverPasswordView(CreateAPIView):
+    serializer_class = UserEmailSerializer
+
+    def perform_create(self, serializer):
+        data = serializer.validated_data
+        usecase = UserRecoverPassword(self.repository, data['email'])
+        return usecase.execute()
+
+    @property
+    def repository(self):
+        return UserRepository()
+
+

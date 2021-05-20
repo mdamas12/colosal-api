@@ -29,7 +29,7 @@ SECRET_KEY = 'lkam^9(ld!z-!35!+)oi@xyr!9_(d%m^8(_axfd5d93x3ex(ll'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ["161.35.123.177","localhost","minimarketcolosal.com","127.0.0.1"]
+ALLOWED_HOSTS = ["161.35.123.177","localhost","minimarketcolosal.com","127.0.0.1","localhost:3333"]
 
 
 # Application definition
@@ -48,6 +48,7 @@ INSTALLED_APPS = [
     'rest_auth',
     'allauth',
     'allauth.account',
+    'allauth.socialaccount',
     'rest_auth.registration',
     'panel',
     'panel.brands',
@@ -86,7 +87,7 @@ MIDDLEWARE = [
 
 CORS_ORIGIN_ALLOW_ALL = True
 
-"""
+
 CORS_ORIGIN_WHITELIST = [
     "http://minimarketcolosal.com",
     "http://161.35.123.177",
@@ -95,7 +96,7 @@ CORS_ORIGIN_WHITELIST = [
     "http://127.0.0.1",
     "http://localhost:3333", 
 ]
-"""
+
 
 ROOT_URLCONF = 'SistemaGestion.urls'
 
@@ -156,14 +157,12 @@ AUTH_PASSWORD_VALIDATORS = [
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
-       
         'rest_framework.authentication.BasicAuthentication',
         #'rest_framework.authentication.SessionAuthentication',
         'rest_framework.authentication.TokenAuthentication'
     ],
-    
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.LimitOffsetPagination',
-    'PAGE_SIZE': 1,
+    'PAGE_SIZE': 25,
 }
 
 REST_AUTH_REGISTER_SERIALIZERS = {
@@ -174,8 +173,15 @@ REST_AUTH_SERIALIZERS = {
     'REGISTER_SERIALIZER': 'users.serializers.RegisterSerializer',
 }
 
-EMAIL_BACKEND = 'django.core.mail.backends.filebased.EmailBackend'
+#EMAIL_BACKEND = 'django.core.mail.backends.filebased.EmailBackend'
 EMAIL_FILE_PATH = os.path.join(BASE_DIR, 'tmp/email')
+
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_HOST_USER = 'luistundisi@gmail.com'
+EMAIL_HOST_PASSWORD = 'qhrogyadslkvbypf' #past the key or password app here
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+DEFAULT_FROM_EMAIL = 'luistundisi@gmail.com'
 
 # Internationalization
 # https://docs.djangoproject.com/en/2.0/topics/i18n/
