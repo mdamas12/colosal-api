@@ -34,6 +34,10 @@ class SliderCreateView(APIView):
         slide = {
                 "image" : data["image"],
                 "status" : data["status"],
+                "title" : data["title"],
+                "span" : data["span"],
+                "action_title" : data["action_title"],
+                "action_link" : data["action_link"],
              }
         Slide_serializer = SlideSerializer(data=slide)
         if Slide_serializer.is_valid():
@@ -75,6 +79,11 @@ class HeaderDetailView(APIView):
 
         slide.image = data["image"]
         slide.status = status_image
+        slide.title = data["title"]
+        slide.span = data["span"]
+        slide.action_title = data["action_title"]
+        slide.action_link = data["action_link"]
+
         slide.save()
 
         return Response("¡Imagen Actualizada con exito!",status=status.HTTP_200_OK) 
@@ -89,5 +98,11 @@ class HeaderDetailView(APIView):
         return Response("se ha eliminado la imagen",status=status.HTTP_204_NO_CONTENT)
 
 
+class SliderWebView(APIView):
+   
+    def get(self, request, format=None):
 
-    
+        """listar una imagenes para la web"""
+        images = Slide.objects.filter(status=True)
+        serializer = SlideDetailSerializer(images, many=True)
+        return Response(serializer.data)  
