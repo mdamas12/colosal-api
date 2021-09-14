@@ -13,7 +13,7 @@
 
 # Comandos de ayuda
 
-### Comandos de ayuda con docker
+### Comandos de ayuda con docker.
 
 1. Levantar todos los contenedores ``docker-compose up --build``
 2. Preparar migraciones ``docker-compose run web python manage.py makemigrations``
